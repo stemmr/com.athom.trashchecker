@@ -1,0 +1,141 @@
+{
+    "id": "com.athom.trashchecker",
+    "name": {
+        "en": "Trashcan Reminder"
+    },
+    "version": "0.0.1",
+    "compatibility": "0.x || 1.x",
+    "author": {
+        "name": "Arthur Stemmer",
+        "email": "apstemmer@hotmail.com"
+    },
+
+    "permissions":[
+        "homey:manager:speech-output",
+        "homey:manager:geolocation",
+        "homey:manager:speech-input"
+    ],
+
+    "flow" : {
+        "conditions":[
+            {
+                "id":"days_to_collect",
+                "title":{
+                    "en":"Trash will be collected",
+                    "nl":"Afval wordt opgehaald"
+                },
+                "args" :[
+                {
+                    "name":"when",
+                    "type":"dropdown",
+                    "values":[
+                        {
+                            "id":"today",
+                            "label":{
+                                "en":"Today",
+                                "nl":"Vandaag"
+                            }
+                        },
+                        {
+                            "id":"tomorrow",
+                            "label":{
+                                "en":"Tomorrow",
+                                "nl":"Morgen"
+                            }
+                        },
+                        {
+                            "id":"datomorrow",
+                            "label":{
+                                "en":"Day after tomorrow",
+                                "nl":"Overmorgen"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"trash_type",
+                    "type":"dropdown",
+                    "values":[
+                        {
+                            "id":"GFT",
+                            "label" : {
+                                "en":"GFT",
+                                "nl":"GFT"
+                                }
+                        },
+                        {
+                            "id":"paper",
+                            "label" : {
+                                "en":"Paper",
+                                "nl":"Papier"
+                                }
+                        },
+                        {
+                            "id":"plastic",
+                            "label" : {
+                                "en" : "Plastic",
+                                "nl" : "Plastic"
+                            }
+                        }
+                    ]
+                }]
+            }
+        ]
+    },
+
+    "supported": {
+        "NL" : [
+            "Asten",
+            "Bergeijk",
+            "Best",
+            "Bladel",
+            "Boekel",
+            "Boxmeer",
+            "Buren",
+            "Cranendonck",
+            "Cuijk",
+            "Culemborg",
+            "Deurne",
+            "Druten",
+            "Echt-Susteren",
+            "Eersel",
+            "Geldermalsen",
+            "Geldrop-Mierlo",
+            "Grave",
+            "Heeze-Leende",
+            "Helmond",
+            "Heumen",
+            "Lelystad",
+            "Lingewaal",
+            "Maasdriel",
+            "Mill en Sint Hubert",
+            "Neder-Betuwe",
+            "Neerijnen",
+            "Nuenen",
+            "Oirschot",
+            "Reusel-De Mierden",
+            "Sint Anthonis",
+            "Someren",
+            "Son en Breugel",
+            "Terneuzen",
+            "Tiel",
+            "Valkenswaard",
+            "Veldhoven",
+            "West Maas en Waal",
+            "Zaltbommel"
+        ],
+
+        "BE" : [
+            "Bocholt",
+            "Genk",
+            "Hamont-Achel",
+            "Hasselt",
+            "Hechtel-Eksel",
+            "Houthalen-Helchteren",
+            "Lommel",
+            "Neerpelt",
+            "Overpelt",
+            "Peer"
+        ]
+    }
+}

@@ -1,0 +1,39 @@
+<html>
+<head></head>
+<body>
+	<h2>
+		Please enter your postcode and house number.
+	</h2>
+
+        <div class="field row">
+            <label for="postcode">Postcode <i style="color:grey">(1234AB)</i></label>
+            <input id="postcode" type="text" value="" />
+        </div>
+        <div class="field row">
+            <label for="number">House number <i style="color:grey">(42)</i></label>
+            <input id="number" type="text" value=""/>
+        </div>
+        <div class="field row">
+            <label for="country">Country <i style="color:grey">(NL/BE)</i></label>
+            NL<input style="width:100px" id="country" name="country" type="radio" value="NL"/>
+            BE<input style="width:100px" id="country" name="country" type="radio" value="BE"/>
+        </div>
+
+    <button class="left" onclick="save()">Save changes</button>
+
+
+	<script type="text/javascript">
+        function onHomeyReady(){
+            Homey.ready()
+        }
+
+        function save() {
+
+
+            Homey.set('postcode', document.getElementById('postcode').value);
+            Homey.set('hnumber', document.getElementById('number').value);
+            Homey.set('country',document.getElementById('country').value);
+        }
+    </script>
+<body>
+</html>
