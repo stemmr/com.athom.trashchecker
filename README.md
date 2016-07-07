@@ -26,33 +26,28 @@ Unfortunately only a few cities are supported by this app, here you can check wh
 	<li>Grave</li>
 	<li>Heeze-Leende</li>
 	<li>Helmond</li>
+	<li>Heumen</li>
+	<li>Lelystad</li>
+	<li>Lingewaal</li>
+	<li>Maasdriel</li>
+	<li>Mill en Sint Hubert</li>
+	<li>Neder-Betuwe</li>
+	<li>Neerijnen</li>
+	<li>Nuenen</li>
+	<li>Oirschot</li>
+	<li>Reusel-De Mierden</li>
+	<li>Sint Anthonis</li>
+	<li>Someren</li>
+	<li>Son en Breugel</li>
+	<li>Terneuzen</li>
+	<li>Tiel</li>
+	<li>Valkenswaard</li>
+	<li>Veldhoven</li>
+	<li>West Maas en Waal</li>
+	<li>Zaltbommel</li>
 	</ul>
 </div>
-<div class="supportedlist">
-	<h4>&nbsp;</h4>
-	<ul>
-		<li>Heumen</li>
-		<li>Lelystad</li>
-		<li>Lingewaal</li>
-		<li>Maasdriel</li>
-		<li>Mill en Sint Hubert</li>
-		<li>Neder-Betuwe</li>
-		<li>Neerijnen</li>
-		<li>Nuenen</li>
-		<li>Oirschot</li>
-		<li>Reusel-De Mierden</li>
-		<li>Sint Anthonis</li>
-		<li>Someren</li>
-		<li>Son en Breugel</li>
-		<li>Terneuzen</li>
-		<li>Tiel</li>
-		<li>Valkenswaard</li>
-		<li>Veldhoven</li>
-		<li>West Maas en Waal</li>
-		<li>Zaltbommel</li>
-	</ul>
-</div>
-<div class="supportedlist">
+<div style="float:left" class="supportedlist">
 	<h4>België</h4>
 	<ul>
 		<li>Bocholt</li>
