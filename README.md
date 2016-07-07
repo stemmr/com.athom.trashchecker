@@ -4,7 +4,7 @@ Check when your trash will be picked up by provinding your postcode and a house 
 #Supported cities
 Unfortunately only a few cities are supported by this app, here you can check whether or not your city is supported:
 
-<div style="float:left" class="supportedlist">
+<div class="supportedlist">
 	<h4>Nederland</h4>
 	<ul>
 	<li>Asten</li>
@@ -47,7 +47,7 @@ Unfortunately only a few cities are supported by this app, here you can check wh
 	<li>Zaltbommel</li>
 	</ul>
 </div>
-<div style="float:left" class="supportedlist">
+<div class="supportedlist">
 	<h4>België</h4>
 	<ul>
 		<li>Bocholt</li>
