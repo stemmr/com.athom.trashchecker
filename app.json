@@ -10,15 +10,18 @@
         "email": "apstemmer@hotmail.com"
     },
 
+    "description":"Use this app to check when your trash will be collected",
+
+    "category":"tools",
+
+    "images":{
+        "large":"./assets/images/large.png",
+        "small":"./assets/images/small.png"
+    },
+
     "credits":{
         "icon":"Pham Thi Dieu Linh"
     },
-
-    "permissions":[
-        "homey:manager:speech-output",
-        "homey:manager:geolocation",
-        "homey:manager:speech-input"
-    ],
 
     "flow" : {
         "conditions":[

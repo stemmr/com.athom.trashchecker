@@ -8,7 +8,7 @@ function updateAPI(postcode, homenumber, country, callback){
 		//homenumber = '13';
 		//country = 'NL';
 
-		Homey.log(postcode,homenumber,country);
+		
 		var options = {
 			host: 'dataservice.deafvalapp.nl',
 			path: '/dataservice/DataServiceServlet?type=ANDROID&service=OPHAALSCHEMA&land=' + country + '&postcode=' + postcode + '&straatId=0&huisnr=' + homenumber + '&huisnrtoev='	
@@ -62,13 +62,12 @@ function updateAPI(postcode, homenumber, country, callback){
 
 function init() {
 	
-	var wait = 24*3600*1000;//every 24 hours update API
+	//every 24 hours update API
 
 	////For testing use these variables, will become pulled from settings
 	
 	Homey.manager('flow').on('condition.days_to_collect',function (callback, args){
 
-		console.log('args' + args.trash_type);
 		console.log(Object.keys(gdates));
 
 		if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
@@ -104,7 +103,7 @@ function init() {
 	});
 
 	setInterval(function(){
-		//console.log(Homey.manager('settings').get( 'postcode' ));
+
 		updateAPI(
 			Homey.manager('settings').get( 'postcode' ),
 			Homey.manager('settings').get('hnumber'),
@@ -112,7 +111,7 @@ function init() {
 			function(){}
 		)
 
-	}, wait);
+	}, 86400000);
 	
 	
 }
