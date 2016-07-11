@@ -1,1 +1,12 @@
-{}
+{
+	"title": "Trash Checker",
+	"settings": {
+		"description":"Please note that not all cities are supported, take a look at the documentation to see whether your city is supported",
+		"title": "Please enter your postal code and home number",
+		"postcode": "Postal code",
+		"hnumber": "House number",
+		"country": "Country",
+		"save": "Save changes",
+		"fail": "This address is not supported"
+	}
+}

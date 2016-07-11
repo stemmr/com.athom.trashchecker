@@ -1,0 +1,12 @@
+{
+	"title": "Trash Checker",
+	"settings": {
+		"description":"Helaas worden niet alle steden ondersteund, bekijk de documentatie om er achter te komen of uw stad wordt ondersteund",
+		"title": "Vul hier je postcode en huisnummer in",
+		"postcode": "Postcode",
+		"hnumber": "Huisnummer",
+		"country": "Land",
+		"save": "Opslaan",
+		"fail": "Dit adres wordt niet ondersteund"
+	}
+}

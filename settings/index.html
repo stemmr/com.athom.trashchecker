@@ -1,38 +1,108 @@
 <html>
-<head></head>
+<head>
+<style>
+	
+
+</style>
+</head>
 <body>
-	<h2>
-		Please enter your postcode and house number.
+	<h2 data-i18n="settings.title">
 	</h2>
 
+    <p style="display:block" data-i18n="settings.description"></p>
+    
+	<fieldset>
+		<legend></legend>
         <div class="field row">
-            <label for="postcode">Postcode <i style="color:grey">(1234AB)</i></label>
-            <input id="postcode" type="text" value="" />
+            <label for="postcode" data-i18n="settings.postcode"></label>
+            <input placeholder="1234AB" id="postcode" maxlength="6" type="text" value=""/>
         </div>
         <div class="field row">
-            <label for="number">House number <i style="color:grey">(42)</i></label>
-            <input id="number" type="text" value=""/>
+            <label for="number" data-i18n="settings.hnumber"></label>
+            <input placeholder="42" id="number" type="text" value=""/>
         </div>
         <div class="field row">
-            <label for="country">Country <i style="color:grey">(NL/BE)</i></label>
-            NL<input style="width:100px" id="country" name="country" type="radio" value="NL"/>
-            BE<input style="width:100px" id="country" name="country" type="radio" value="BE"/>
+        	
+	            <label style="float:left" for="country" data-i18n="settings.country"></label>
+	            <div style="float:left">
+		            <input  style="width:10px" checked="checked" id="NL" name="country" type="radio" value="NL"/><span class="name">NL</span><br>
+		            <input  style="width:10px" id="BE" name="country" type="radio" value="NL"/><span class="name">BE</span>
+	            </div>
+	        
         </div>
+        <span style="color:red;visibility:hidden" id="resp" data-i18n="settings.fail"></span>
+        
+    </fieldset>
+    <button class="left" style="display:block" onclick="save()" data-i18n="settings.save" ></button>
+    
 
-    <button class="left" onclick="save()">Save changes</button>
+    
+    
 
 
 	<script type="text/javascript">
         function onHomeyReady(){
+
+        	Homey.get('postcode', function(err, postcode){
+        		if(err) 
+        		{
+        			console.log("not working");
+        			return console.error(err);
+        		}
+        		document.getElementById('postcode').value = postcode;
+        	});
+
+        	Homey.get('hnumber', function(err, housenumber){
+        		if(err) return console.error(err);
+        		document.getElementById('number').value = housenumber;
+        	});
+
+        	Homey.get('country',function(err, country){
+        		console.log(country);
+        		if(err){
+        			return console.error(err);
+        		}
+        		if(country == 'NL' || country == 'BE'){
+        			document.getElementById(country).checked = true;
+        		}else{
+        			document.getElementById('NL').checked = true;
+        		}
+        	});
+
             Homey.ready()
         }
 
         function save() {
+        	var pc = document.getElementById('postcode').value;
+        	var num = document.getElementById('number').value;
+        	var country;
+
+        	if(document.getElementById('NL').checked){
+            	country = 'NL';
+            }else if(document.getElementById('BE').checked){
+            	country = 'BE';
+            }
 
 
-            Homey.set('postcode', document.getElementById('postcode').value);
-            Homey.set('hnumber', document.getElementById('number').value);
-            Homey.set('country',document.getElementById('country').value);
+        	Homey.api('POST', '/', {
+
+        		"postcode":pc,
+        		"housenumber":num,
+        		"country":country
+
+        	},function(err,result){
+        		if(err) return console.log(err);
+        		if(result){
+        			document.getElementById("resp").style.visibility = 'hidden';
+		            Homey.set('postcode',pc);
+		            Homey.set('hnumber',num);
+		            Homey.set('country',country);
+	        	}else{
+	        		document.getElementById("resp").style.visibility = 'visible';
+	        	}
+        		//Do stuff if truw/false (kruis,vinkje)
+        		console.log(result);
+        	});
         }
     </script>
 <body>

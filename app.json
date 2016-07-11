@@ -10,6 +10,10 @@
         "email": "apstemmer@hotmail.com"
     },
 
+    "credits":{
+        "icon":"Pham Thi Dieu Linh"
+    },
+
     "permissions":[
         "homey:manager:speech-output",
         "homey:manager:geolocation",
@@ -64,14 +68,14 @@
                                 }
                         },
                         {
-                            "id":"paper",
+                            "id":"PAPIER",
                             "label" : {
                                 "en":"Paper",
                                 "nl":"Papier"
                                 }
                         },
                         {
-                            "id":"plastic",
+                            "id":"PLASTIC",
                             "label" : {
                                 "en" : "Plastic",
                                 "nl" : "Plastic"
