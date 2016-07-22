@@ -61,7 +61,24 @@ function updateAPI(postcode, homenumber, country, callback){
 	}
 
 function init() {
-	
+	if (Homey.manager('settings').get('postcode') && 
+		Homey.manager('settings').get('hnumber') && 
+		Homey.manager('settings').get('country')){
+
+		updateAPI(
+			Homey.manager('settings').get('postcode'),
+			Homey.manager('settings').get('hnumber'),
+			Homey.manager('settings').get('country'),
+			function(success){
+				if(success){
+					console.log('retrieved house information');
+				}else{
+					console.log('house information has not been set');
+				}
+				
+			}
+		);
+	}
 	//every 24 hours update API
 
 	////For testing use these variables, will become pulled from settings
@@ -72,23 +89,18 @@ function init() {
 
 		if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
 		{	
-				
-				
-				return callback( new Error("Invalid address") );
+			return callback( new Error("Invalid address") );
 		}
 
-		
-
 		var now = new Date();
-		//now.setDate(now.getDate() + 2);
+		//to test on working date(or some other number)
+		//now.setDate(now.getDate() + 2) 
 		var dateString = '';
 		if(args.when == 'tomorrow'){
 			now.setDate(now.getDate() + 1);
 		}else if(args.when == 'datomorrow'){
 			now.setDate(now.getDate() + 2);
 		}
-
-		
 
 		dateString += pad( now.getDate(), 2);
 		dateString += '-';
@@ -105,7 +117,7 @@ function init() {
 	setInterval(function(){
 
 		updateAPI(
-			Homey.manager('settings').get( 'postcode' ),
+			Homey.manager('settings').get('postcode'),
 			Homey.manager('settings').get('hnumber'),
 			Homey.manager('settings').get('country'),
 			function(){}
