@@ -3,14 +3,17 @@
     "name": {
         "en": "Trashcan Reminder"
     },
-    "version": "0.0.1",
+    "version": "0.0.2",
     "compatibility": "0.x || 1.x",
     "author": {
         "name": "Arthur Stemmer",
         "email": "apstemmer@hotmail.com"
     },
 
-    "description":"Use this app to check when your trash will be collected",
+    "description":{
+        "en":"Use this app to check when your trash will be collected",
+        "nl":"Gebruik deze app om er achter te komen wanneer uw afval thuis wordt opgehaald"
+      },
 
     "category":"tools",
 
@@ -64,6 +67,13 @@
                     "type":"dropdown",
                     "values":[
                         {
+                          "id":"REST",
+                          "label":{
+                            "en":"Rest",
+                            "nl":"Rest"
+                          }
+                        },
+                        {
                             "id":"GFT",
                             "label" : {
                                 "en":"GFT",
@@ -83,6 +93,20 @@
                                 "en" : "Plastic",
                                 "nl" : "Plastic"
                             }
+                        },
+                        {
+                          "id":"PMD",
+                          "label":{
+                            "en":"PMD",
+                            "nl":"PMD"
+                          }
+                        },
+                        {
+                          "id":"TEXTIEL",
+                          "label":{
+                            "en":"Textiles",
+                            "nl":"Textiel"
+                          }
                         }
                     ]
                 }]
