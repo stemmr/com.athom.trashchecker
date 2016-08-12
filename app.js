@@ -1,3 +1,4 @@
+/*globals Homey*/
 "use strict";
 
 var http = require('http');
@@ -8,12 +9,12 @@ function updateAPI(postcode, homenumber, country, callback){
 		//homenumber = '13';
 		//country = 'NL';
 
-		
+
 		var options = {
 			host: 'dataservice.deafvalapp.nl',
-			path: '/dataservice/DataServiceServlet?type=ANDROID&service=OPHAALSCHEMA&land=' + country + '&postcode=' + postcode + '&straatId=0&huisnr=' + homenumber + '&huisnrtoev='	
+			path: '/dataservice/DataServiceServlet?type=ANDROID&service=OPHAALSCHEMA&land=' + country + '&postcode=' + postcode + '&straatId=0&huisnr=' + homenumber + '&huisnrtoev='
 		};
-		
+
 		var req = http.get(options, function (res){
 			var dates = {};
 			var curr = '';
@@ -22,7 +23,7 @@ function updateAPI(postcode, homenumber, country, callback){
 			res.on('data',function(chunk){
 
 				data += chunk;
-				
+
 			});
 
 			res.on('end', function(){
@@ -33,7 +34,7 @@ function updateAPI(postcode, homenumber, country, callback){
 					if(isNaN(parseInt(respArray[i])))
 					{
 						dates[respArray[i]] = [];
-						curr = respArray[i];	
+						curr = respArray[i];
 					}
 					else{
 						dates[curr].push(respArray[i]);
@@ -41,18 +42,18 @@ function updateAPI(postcode, homenumber, country, callback){
 				}
 
 				if(Object.keys(dates).length === 0 && dates.constructor === Object){
-					return callback(false);
 					Homey.log('Invalid input');
-					
+					return callback(false);
+
 				}else{//validate the response
 					//Homey.log(dates);
 					gdates = dates;
 					return callback(true);
-					
-					
+
+
 				}
-				
-			})
+
+			});
 		});
 
 		req.on('error', function (err){
@@ -61,8 +62,8 @@ function updateAPI(postcode, homenumber, country, callback){
 	}
 
 function init() {
-	if (Homey.manager('settings').get('postcode') && 
-		Homey.manager('settings').get('hnumber') && 
+	if (Homey.manager('settings').get('postcode') &&
+		Homey.manager('settings').get('hnumber') &&
 		Homey.manager('settings').get('country')){
 
 		updateAPI(
@@ -75,26 +76,26 @@ function init() {
 				}else{
 					console.log('house information has not been set');
 				}
-				
+
 			}
 		);
 	}
 	//every 24 hours update API
 
 	////For testing use these variables, will become pulled from settings
-	
+
 	Homey.manager('flow').on('condition.days_to_collect',function (callback, args){
 
 		console.log(Object.keys(gdates));
 
 		if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
-		{	
+		{
 			return callback( new Error("Invalid address") );
 		}
 
 		var now = new Date();
 		//to test on working date(or some other number)
-		//now.setDate(now.getDate() + 2) 
+		//now.setDate(now.getDate() + 2)
 		var dateString = '';
 		if(args.when == 'tomorrow'){
 			now.setDate(now.getDate() + 1);
@@ -124,8 +125,8 @@ function init() {
 		)
 
 	}, 86400000);
-	
-	
+
+
 }
 
 module.exports.init = init;
