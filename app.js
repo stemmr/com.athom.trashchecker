@@ -1,64 +1,70 @@
-/*globals Homey*/
+/*globals Homey, module, require, setInterval*/
 "use strict";
 
 var http = require('http');
+var apiArray = require('./trashapis.js');
 var gdates = '';
 
 function updateAPI(postcode, homenumber, country, callback){
 		//postcode = '5301hBD';
 		//homenumber = '13';
 		//country = 'NL';
+		function asyncLoop(iterations, func, callback) {
+    var index = 0;
+    var done = false;
+    var loop = {
+        next: function() {
+            if (done) {
+                return;
+            }
 
+            if (index < iterations) {
+                index++;
+                func(loop);
 
-		var options = {
-			host: 'dataservice.deafvalapp.nl',
-			path: '/dataservice/DataServiceServlet?type=ANDROID&service=OPHAALSCHEMA&land=' + country + '&postcode=' + postcode + '&straatId=0&huisnr=' + homenumber + '&huisnrtoev='
-		};
+            } else {
+                done = true;
+                callback();
+            }
+        },
 
-		var req = http.get(options, function (res){
-			var dates = {};
-			var curr = '';
-			var data = '';
+        iteration: function() {
+            return index - 1;
+        },
 
-			res.on('data',function(chunk){
+        break: function() {
+            done = true;
+            callback();
+        }
+    };
+    loop.next();
+    return loop;
+	}
 
-				data += chunk;
+	asyncLoop(apiArray.length, function(loop){
 
-			});
+		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=>{
 
-			res.on('end', function(){
-
-			var respArray = data.toString().split('\n').join('').split(";");
-				respArray.pop();
-				for(var i in respArray){
-					if(isNaN(parseInt(respArray[i])))
-					{
-						dates[respArray[i]] = [];
-						curr = respArray[i];
-					}
-					else{
-						dates[curr].push(respArray[i]);
-					}
+				if(err) console.log('error while looping');
+				console.log(result);
+				if(Object.keys(result).length > 0){
+					console.log('data received');
+					gdates = result;
+					callback(true);
+				}else if(Object.keys(result).length === 0){
+					console.log(loop);
+					loop.next();
 				}
-
-				if(Object.keys(dates).length === 0 && dates.constructor === Object){
-					Homey.log('Invalid input');
-					return callback(false);
-
-				}else{//validate the response
-					//Homey.log(dates);
-					gdates = dates;
-					return callback(true);
-
-
-				}
-
-			});
 		});
+	},()=>{
+		console.log('Checked all APIs');
+		return callback(false);
+	});
 
-		req.on('error', function (err){
-				Homey.log(err.message);
-		});
+
+
+
+
 	}
 
 function init() {
@@ -72,9 +78,9 @@ function init() {
 			Homey.manager('settings').get('country'),
 			function(success){
 				if(success){
-					console.log('retrieved house information');
+					Homey.log('retrieved house information');
 				}else{
-					console.log('house information has not been set');
+					Homey.log('house information has not been set');
 				}
 
 			}
@@ -86,7 +92,7 @@ function init() {
 
 	Homey.manager('flow').on('condition.days_to_collect',function (callback, args){
 
-		console.log(Object.keys(gdates));
+		Homey.log(Object.keys(gdates));
 
 		if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
 		{
@@ -95,7 +101,7 @@ function init() {
 
 		var now = new Date();
 		//to test on working date(or some other number)
-		//now.setDate(now.getDate() + 2)
+		now.setDate(now.getDate() -1);
 		var dateString = '';
 		if(args.when == 'tomorrow'){
 			now.setDate(now.getDate() + 1);
@@ -122,9 +128,9 @@ function init() {
 			Homey.manager('settings').get('hnumber'),
 			Homey.manager('settings').get('country'),
 			function(){}
-		)
+		);
 
-	}, 86400000);
+	}, 86400000);//every day
 
 
 }
