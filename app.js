@@ -46,14 +46,16 @@ function updateAPI(postcode, homenumber, country, callback){
 		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=>{
 
 				if(err) console.log('error while looping');
-				console.log(result);
+
 				if(Object.keys(result).length > 0){
-					console.log('data received');
+
 					gdates = result;
 					callback(true);
+
 				}else if(Object.keys(result).length === 0){
-					console.log(loop);
+
 					loop.next();
+
 				}
 		});
 	},()=>{
