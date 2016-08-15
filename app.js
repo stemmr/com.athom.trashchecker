@@ -45,9 +45,10 @@ function updateAPI(postcode, homenumber, country, callback){
 
 		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=>{
 
-				if(err) console.log('error while looping');
-
-				if(Object.keys(result).length > 0){
+				if(err){
+					console.log('error while looping');
+					loop.next();
+				}else if(Object.keys(result).length > 0){
 
 					gdates = result;
 					callback(true);
@@ -62,11 +63,6 @@ function updateAPI(postcode, homenumber, country, callback){
 		console.log('Checked all APIs');
 		return callback(false);
 	});
-
-
-
-
-
 	}
 
 function init() {
@@ -102,8 +98,8 @@ function init() {
 		}
 
 		var now = new Date();
-		//to test on working date(or some other number)
-		now.setDate(now.getDate() -1);
+		//uncomment below to test on working date(or some other number)
+		//now.setDate(now.getDate() -1);
 		var dateString = '';
 		if(args.when == 'tomorrow'){
 			now.setDate(now.getDate() + 1);

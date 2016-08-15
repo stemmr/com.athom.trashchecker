@@ -43,7 +43,7 @@ function afvalapp(postcode, homenumber, country, callback){
 
   				}else{//validate the response
 
-  					return callback(null,{});
+  					return callback(null,dates);
 
 
   				}
@@ -57,7 +57,7 @@ function afvalapp(postcode, homenumber, country, callback){
 }
 
 function mijnAfvalWijzer(postcode, housenumber, country, callback){
-  var dates = {REST:
+  /*var dates = {REST:
    [ '29-12-2016',
      '01-12-2016',
      '03-11-2016',
@@ -70,20 +70,19 @@ function mijnAfvalWijzer(postcode, housenumber, country, callback){
      '21-04-2016',
      '24-03-2016',
      '25-02-2016',
-     '28-01-2016' ]};
+     '28-01-2016' ]};*/
 
   var fDates = {};
   if(country !== "NL"){
     console.log('unsupported country');
-    callback(null,false);
+    callback(new Error('unsupported country'));
   }
   var options = {
     host:'www.mijnafvalwijzer.nl',
     path:'nl/3825AL/41/'
   };
 
-  request('http://www.mijnafvalwijzer.nl/nl/3571VG/7/', function(err, res, body){
-
+  request(`http://www.mijnafvalwijzer.nl/nl/${postcode}/${housenumber}/`, function(err, res, body){
     if(!err && res.statusCode == 200){
       //console.log(res);
       var $ = cheerio.load(res.body);
@@ -104,14 +103,17 @@ function mijnAfvalWijzer(postcode, housenumber, country, callback){
             fDates.REST.push(dateStr);
           break;
           default:
-            console.log('defaulted');
+            console.log('defaulted', elem.attribs.class);
         }
 
         //console.log(`${elem.attribs.class}:\t\t${elem.children[0].data}`);
       });
+      console.log(fDates);
+      return callback(null, fDates);
+    }else{
+      return callback(new Error('Invalid location'));
     }
-    console.log(fDates);
-    return callback(null, fDates);
+
   });
 }
 
@@ -133,17 +135,16 @@ function parseDate(dateString){
             'december'];
   var monthNum = months.indexOf(dateArray[2]) + 1;
   if(monthNum > 0){
-    var monthString = (monthNum+1).toString();
+    var monthString = (monthNum).toString();
     if(monthString.length === 1){
       monthString = '0' + monthString;
     }
     fullString += monthString + '-';
   }else{
-    conole.log('This should not be possible...');
+    console.log('This should not be possible...');
     return 'erroneous date';
   }
   fullString += new Date().getFullYear();
-  //console.log(fullString);
   return fullString;
 }
 
