@@ -57,30 +57,12 @@ function afvalapp(postcode, homenumber, country, callback){
 }
 
 function mijnAfvalWijzer(postcode, housenumber, country, callback){
-  /*var dates = {REST:
-   [ '29-12-2016',
-     '01-12-2016',
-     '03-11-2016',
-     '06-10-2016',
-     '08-09-2016',
-     '11-08-2016',
-     '14-07-2016',
-     '16-06-2016',
-     '19-05-2016',
-     '21-04-2016',
-     '24-03-2016',
-     '25-02-2016',
-     '28-01-2016' ]};*/
 
   var fDates = {};
   if(country !== "NL"){
     console.log('unsupported country');
     callback(new Error('unsupported country'));
   }
-  var options = {
-    host:'www.mijnafvalwijzer.nl',
-    path:'nl/3825AL/41/'
-  };
 
   request(`http://www.mijnafvalwijzer.nl/nl/${postcode}/${housenumber}/`, function(err, res, body){
     if(!err && res.statusCode == 200){

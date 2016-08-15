@@ -8,7 +8,7 @@ module.exports = [
 				console.log(args);
 				callback(null, isValid);
 			});
-			
+
 		}
 	}
-]
+];

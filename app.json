@@ -3,7 +3,7 @@
     "name": {
         "en": "Trashcan Reminder"
     },
-    "version": "0.0.2",
+    "version": "0.1.0",
     "compatibility": "0.x || 1.x",
     "author": {
         "name": "Arthur Stemmer",
@@ -111,62 +111,6 @@
                     ]
                 }]
             }
-        ]
-    },
-
-    "supported": {
-        "NL" : [
-            "Asten",
-            "Bergeijk",
-            "Best",
-            "Bladel",
-            "Boekel",
-            "Boxmeer",
-            "Buren",
-            "Cranendonck",
-            "Cuijk",
-            "Culemborg",
-            "Deurne",
-            "Druten",
-            "Echt-Susteren",
-            "Eersel",
-            "Geldermalsen",
-            "Geldrop-Mierlo",
-            "Grave",
-            "Heeze-Leende",
-            "Helmond",
-            "Heumen",
-            "Lelystad",
-            "Lingewaal",
-            "Maasdriel",
-            "Mill en Sint Hubert",
-            "Neder-Betuwe",
-            "Neerijnen",
-            "Nuenen",
-            "Oirschot",
-            "Reusel-De Mierden",
-            "Sint Anthonis",
-            "Someren",
-            "Son en Breugel",
-            "Terneuzen",
-            "Tiel",
-            "Valkenswaard",
-            "Veldhoven",
-            "West Maas en Waal",
-            "Zaltbommel"
-        ],
-
-        "BE" : [
-            "Bocholt",
-            "Genk",
-            "Hamont-Achel",
-            "Hasselt",
-            "Hechtel-Eksel",
-            "Houthalen-Helchteren",
-            "Lommel",
-            "Neerpelt",
-            "Overpelt",
-            "Peer"
         ]
     }
 }
