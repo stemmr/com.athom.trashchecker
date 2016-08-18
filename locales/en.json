@@ -7,6 +7,8 @@
 		"hnumber": "House number",
 		"country": "Country",
 		"save": "Save changes",
-		"fail": "This address is not supported"
+		"fail": "This address is not supported",
+		"update": "Address updated to ",
+		"checking": "checking address..."
 	}
 }

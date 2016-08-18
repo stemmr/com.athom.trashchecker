@@ -1,7 +1,7 @@
 <html>
 <head>
 <style>
-	
+
 
 </style>
 </head>
@@ -10,7 +10,7 @@
 	</h2>
 
     <p style="display:block" data-i18n="settings.description"></p>
-    
+
 	<fieldset>
 		<legend></legend>
         <div class="field row">
@@ -22,29 +22,29 @@
             <input placeholder="42" id="number" type="text" value=""/>
         </div>
         <div class="field row">
-        	
+
 	            <label style="float:left" for="country" data-i18n="settings.country"></label>
 	            <div style="float:left">
 		            <input  style="width:10px" checked="checked" id="NL" name="country" type="radio" value="NL"/><span class="name">NL</span><br>
 		            <input  style="width:10px" id="BE" name="country" type="radio" value="NL"/><span class="name">BE</span>
 	            </div>
-	        
+
         </div>
-        <span style="color:red;visibility:hidden" id="resp" data-i18n="settings.fail"></span>
-        
+        <span id="resp"></span>
+
     </fieldset>
     <button class="left" style="display:block" onclick="save()" data-i18n="settings.save" ></button>
-    
 
-    
-    
+
+
+
 
 
 	<script type="text/javascript">
         function onHomeyReady(){
 
         	Homey.get('postcode', function(err, postcode){
-        		if(err) 
+        		if(err)
         		{
         			console.log("not working");
         			return console.error(err);
@@ -73,8 +73,12 @@
         }
 
         function save() {
+					var resp = document.getElementById("resp");
+					resp.style.color = 'black';
+					resp.innerHTML = __('settings.checking');
         	var pc = document.getElementById('postcode').value;
         	var num = document.getElementById('number').value;
+
         	var country;
 
         	if(document.getElementById('NL').checked){
@@ -92,13 +96,17 @@
 
         	},function(err,result){
         		if(err) return console.log(err);
+
         		if(result){
-        			document.getElementById("resp").style.visibility = 'hidden';
+							resp.style.color = 'green';
+							//resp.data-i18n = 'settings.update'
+							resp.innerHTML = __('settings.update') + pc + ', ' + num + ' in ' + country;
 		            Homey.set('postcode',pc);
 		            Homey.set('hnumber',num);
 		            Homey.set('country',country);
 	        	}else{
-	        		document.getElementById("resp").style.visibility = 'visible';
+								resp.innerHTML = __('settings.fail');
+								resp.style.color = 'red';
 	        	}
         		//Do stuff if truw/false (kruis,vinkje)
         		console.log(result);

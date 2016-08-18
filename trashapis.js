@@ -84,6 +84,18 @@ function mijnAfvalWijzer(postcode, housenumber, country, callback){
             if(!fDates.REST) fDates.REST = [];
             fDates.REST.push(dateStr);
           break;
+          case 'restgft':
+            if(!fDates.REST) fDates.REST = [];
+            if(!fDates.GFT) fDates.GFT = [];
+            fDates.REST.push(dateStr);
+            fDates.GFT.push(dateStr);
+          break;
+          case 'dhm':
+            if(!fDates.PAPIER) fDates.PAPIER = [];
+            if(!fDates.PMD) fDates.PMD = [];
+            fDates.PAPIER.push(dateStr);
+            fDates.PMD.push(dateStr);
+          break;
           default:
             console.log('defaulted', elem.attribs.class);
         }
