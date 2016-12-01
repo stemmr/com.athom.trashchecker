@@ -111,6 +111,64 @@ function mijnAfvalWijzer(postcode, housenumber, country, callback){
   });
 }
 
+function afvalwijzerArnhem(postcode, housenumber, country, callback){
+  var fDates = {};
+  if(country !== "NL"){
+    console.log('unsupported country');
+    callback(new Error('unsupported country'));
+  }
+ 
+  var url = `http://www.afvalwijzer-arnhem.nl/applicatie?ZipCode=${postcode}&HouseNumber=${housenumber}&HouseNumberAddition=`;
+ // console.log(url);
+
+  request(url, function(err, res, body){
+    if(!err && res.statusCode == 200){
+      //console.log(res);
+       var $ = cheerio.load(res.body);
+       $('ul.ulPickupDates li').each((i, elem)=>{
+         var dateStr =dateFormat(elem.children[2].data.trim());
+         switch (elem.attribs.class) {
+          case 'gft':
+            if(!fDates.GFT) fDates.GFT = [];
+            fDates.GFT.push(dateStr);
+            break;
+          case 'papier':
+            if(!fDates.PAPIER) fDates.PAPIER = [];
+            fDates.PAPIER.push(dateStr);
+            break;
+          case 'restafval':
+            if(!fDates.REST) fDates.REST = [];
+            fDates.REST.push(dateStr);
+          break;
+          case 'kunststof':
+            if(!fDates.PLASTIC) fDates.PLASTIC = [];
+            fDates.PLASTIC.push(dateStr);
+          break;
+          default:
+            console.log('defaulted', elem.attribs.class);
+        }
+        // console.log(i);
+        //  console.log(elem);
+        //  console.log(elem.attribs.class);
+        // console.log(`${elem.attribs.class}:\t\t${elem.children[2].data.trim()}`);
+       }) 
+      console.log(fDates);
+      return callback(null, fDates);   
+    } else {
+       return callback(new Error('Invalid location'));
+    }
+  })
+}
+
+function dateFormat(date) {
+    var ad = date.split('-')
+    var result = ('0' + ad[0]).slice(-2) + '-' + ('0' + ad[1]).slice(-2) + '-' + ad[2];
+    console.log(result);
+
+    // add leading zero if required
+    return result;
+}
+
 function parseDate(dateString){
   var fullString = '';
   dateArray = dateString.split(" ");
@@ -142,7 +200,8 @@ function parseDate(dateString){
   return fullString;
 }
 
-apiList.push(afvalapp);
-apiList.push(mijnAfvalWijzer);
+//apiList.push(afvalapp);
+//apiList.push(mijnAfvalWijzer);
+apiList.push(afvalwijzerArnhem);
 
 module.exports = apiList;
