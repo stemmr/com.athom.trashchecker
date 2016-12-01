@@ -200,8 +200,8 @@ function parseDate(dateString){
   return fullString;
 }
 
-//apiList.push(afvalapp);
-//apiList.push(mijnAfvalWijzer);
+apiList.push(afvalapp);
+apiList.push(mijnAfvalWijzer);
 apiList.push(afvalwijzerArnhem);
 
 module.exports = apiList;
