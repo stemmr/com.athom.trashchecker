@@ -32,6 +32,17 @@
     "credits":{
         "icon":"Pham Thi Dieu Linh"
     },
+	
+	"speech":[
+		{
+			"id": "trash_collected",
+			"importance": 0.7,
+			"triggers" : {
+				"en" : ["collected", "trash", "container"],
+				"nl" : ["opgehaald", "container", "afvalbak", "vuilnisbak"]
+			}
+		}
+	],
 
     "flow" : {
         "conditions":[
@@ -76,14 +87,14 @@
                         {
                           "id":"REST",
                           "label":{
-                            "en":"Rest",
+                            "en":"Residual",
                             "nl":"Rest"
                           }
                         },
                         {
                             "id":"GFT",
                             "label" : {
-                                "en":"GFT",
+                                "en":"Organic Waste",
                                 "nl":"GFT"
                                 }
                         },

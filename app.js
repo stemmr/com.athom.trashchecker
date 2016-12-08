@@ -4,6 +4,7 @@
 var http = require('http');
 var apiArray = require('./trashapis.js');
 var gdates = '';
+var manualInput = false;
 
 function updateAPI(postcode, homenumber, country, callback){
 		//postcode = '5301hBD';
@@ -66,7 +67,23 @@ function updateAPI(postcode, homenumber, country, callback){
 	}
 
 function init() {
-	if (Homey.manager('settings').get('postcode') &&
+	
+	// Check if we have to handle manual input, or automatically.
+	if(Homey.manager('settings').get('manualInput'))
+	{
+		var manually = Homey.manager('settings').get('manualInput');
+		if(manually === true)
+		{
+			manualInput = true;
+		}
+		else
+		{
+			manualInput = false;
+		}
+	}
+	
+	if (manualInput === false && 
+		Homey.manager('settings').get('postcode') &&
 		Homey.manager('settings').get('hnumber') &&
 		Homey.manager('settings').get('country')){
 
@@ -80,14 +97,30 @@ function init() {
 				}else{
 					Homey.log('house information has not been set');
 				}
-
 			}
 		);
 	}
-	//every 24 hours update API
+	else
+	{
+		// Generate new days based on manual input
+		GenerateNewDaysBasedOnManualInput();
+		console.log(gdates);
+	}
 
-	////For testing use these variables, will become pulled from settings
-
+	// Update manual input dates when settings change.
+	Homey.manager('settings').on('set', function(parameterName)
+	{
+		if(parameterName !== "manualEntryData")
+		{
+			return;
+		}
+		
+		GenerateNewDaysBasedOnManualInput();
+		console.log("new dates generated");
+		console.log(gdates);
+	});
+	
+	// For testing use these variables, will become pulled from settings
 	Homey.manager('flow').on('condition.days_to_collect',function (callback, args){
 
 		Homey.log(Object.keys(gdates));
@@ -116,29 +149,290 @@ function init() {
 		Homey.log(dateString);
 
 		return callback( null, gdates[ args.trash_type.toUpperCase() ].indexOf(dateString) > -1 );
-
 	});
+	
+	Homey.manager('speech-input').on('speech', parseSpeach);
 
+	// Every 24 hours update API or manual dates
 	setInterval(function(){
+		
+		// Only do API requests if we don't have manual input to handle.
+		if(manualInput === false)
+		{
+			updateAPI(
+				Homey.manager('settings').get('postcode'),
+				Homey.manager('settings').get('hnumber'),
+				Homey.manager('settings').get('country'),
+				function(){}
+			);
+		}
+		else
+		{
+			// Generate new days based on manual input.
+			GenerateNewDaysBasedOnManualInput();
+			console.log(gdates);
+		}
 
-		updateAPI(
-			Homey.manager('settings').get('postcode'),
-			Homey.manager('settings').get('hnumber'),
-			Homey.manager('settings').get('country'),
-			function(){}
-		);
-
-	}, 86400000);//every day
+	}, 86400000); //every day
 
 
 }
 
 module.exports.init = init;
-
 module.exports.updateAPI = updateAPI;
+
+function parseSpeach (speech, callback) {
+  Homey.log('parseSpeach()', speech);
+  console.log(speech);
+  speech.triggers.some(function (trigger) {
+    switch (trigger.id) {
+      case 'trash_collected' :
+        
+		console.log(speech);
+
+        // Only execute 1 trigger
+        return true
+		
+    }
+  });
+
+  callback(null, true);
+}
 
 function pad(n, width, z) {
   z = z || '0';
   n = n + '';
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+function GenerateNewDaysBasedOnManualInput()
+{
+	// Retrieve settings
+	var manualSettings = Homey.manager('settings').get('manualEntryData');
+	var dates = {};
+	
+	// Parse dates per type
+	if(manualSettings.gft)
+	{
+		dates.GFT = {};
+		dates.GFT = CalculatePickupDates(manualSettings.gft);
+	}
+	
+	if(manualSettings.paper)
+	{
+		dates.PAPIER = {};
+		dates.PAPIER = CalculatePickupDates(manualSettings.paper);
+	}
+	
+	if(manualSettings.rest)
+	{
+		dates.REST = {};
+		dates.REST = CalculatePickupDates(manualSettings.rest);
+	}
+	
+	if(manualSettings.pmd)
+	{
+		dates.PMD = {};
+		dates.PMD = CalculatePickupDates(manualSettings.pmd);
+	}
+	
+	if(manualSettings.plastic)
+	{
+		dates.PLASTIC = {};
+		dates.PLASTIC = CalculatePickupDates(manualSettings.plastic);
+	}
+	
+	if(manualSettings.textile)
+	{
+		dates.TEXTIEL = {};
+		dates.TEXTIEL = CalculatePickupDates(manualSettings.textile);
+	}
+	
+	// Push to gdates
+	gdates = dates;
+}
+
+function CalculatePickupDates(settings)
+{
+	var result = [];
+
+	var interval = -1;
+	try { 
+		interval = parseInt(settings.option);
+	} catch(e) { console.log(e); };
+	
+	var intervalExtended = -1;
+	try { 
+		intervalExtended = parseInt(settings.option_extension);
+	} catch(e) { console.log(e); };
+	
+	var startDate = new Date(Date.now());
+	try { 
+		startDate = settings.startdate;
+	} catch(e) { console.log(e); };
+	
+	var dayOfWeek = null;
+	try { 
+		dayOfWeek = parseInt(settings.day);
+	} catch(e) { console.log(e); };
+	
+	var currentDate = new Date(Date.now());
+	var startDate = new Date(startDate);
+	
+	var firstDayInCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	var previousMonth = new Date(new Date(firstDayInCurrentMonth).setMonth(firstDayInCurrentMonth.getMonth()-1));
+	var nextMonth = new Date(new Date(firstDayInCurrentMonth).setMonth(firstDayInCurrentMonth.getMonth()+1));
+	var afterNextMonth = new Date(new Date(firstDayInCurrentMonth).setMonth(firstDayInCurrentMonth.getMonth()+2));
+	
+	if(interval >= 5 && interval <= 7) // every x-th week of month/quarter/year
+	{
+		var nThWeek = interval-4;
+		var date1 = new Date();
+		var date2 = new Date();
+		var date3 = new Date();
+		
+		if(intervalExtended == 12) // every x-th week of the year
+		{
+			date1 = nthDayInMonth(nThWeek, dayOfWeek, 0, currentDate.getFullYear()-1);
+			date2 = nthDayInMonth(nThWeek, dayOfWeek, 0, currentDate.getFullYear());
+			date3 = nthDayInMonth(nThWeek, dayOfWeek, 0, currentDate.getFullYear()+1);
+		}
+		else if(intervalExtended == 3) // every x-th week of the quarter
+		{
+			var currentQuarter = ((currentDate.getMonth()-((currentDate.getMonth()+3)%3))/3);
+			var currentQuarterStart = new Date(currentDate.getFullYear(), currentQuarter*3, 1);
+			var previousQuarterStart = new Date(new Date(currentQuarterStart).setMonth(currentQuarterStart.getMonth()-3));
+			var nextQuarterStart = new Date(new Date(currentQuarterStart).setMonth(currentQuarterStart.getMonth()+3));
+			
+			date1 = nthDayInMonth(nThWeek, dayOfWeek, previousQuarterStart.getMonth(), previousQuarterStart.getFullYear());
+			date2 = nthDayInMonth(nThWeek, dayOfWeek, currentQuarterStart.getMonth(), currentQuarterStart.getFullYear());
+			date3 = nthDayInMonth(nThWeek, dayOfWeek, nextQuarterStart.getMonth(), nextQuarterStart.getFullYear());
+		}
+		else // every x-th week of the month
+		{		
+			date1 = nthDayInMonth(nThWeek, dayOfWeek, previousMonth.getMonth(), previousMonth.getFullYear());
+			date2 = nthDayInMonth(nThWeek, dayOfWeek, firstDayInCurrentMonth.getMonth(), firstDayInCurrentMonth.getFullYear());
+			date3 = nthDayInMonth(nThWeek, dayOfWeek, nextMonth.getMonth(), nextMonth.getFullYear());
+		}
+		
+		result.push(dateToString(date1));
+		result.push(dateToString(date2));
+		result.push(dateToString(date3));
+	}
+	else if(interval <= 4) // per week
+	{
+		var date0 = everyNthWeek(interval, dayOfWeek, startDate, currentDate, -2);
+		var date1 = everyNthWeek(interval, dayOfWeek, startDate, currentDate, -1);
+		var date2 = everyNthWeek(interval, dayOfWeek, startDate, currentDate, 0);
+		var date3 = everyNthWeek(interval, dayOfWeek, startDate, currentDate, 1);
+		var date4 = everyNthWeek(interval, dayOfWeek, startDate, currentDate, 2);
+		
+		result.push(dateToString(date0));
+		result.push(dateToString(date1));
+		result.push(dateToString(date2));
+		result.push(dateToString(date3));
+		result.push(dateToString(date4));
+	}
+	else if(interval >= 8 && interval <= 9) // every last, every second last
+	{
+		var nthLastWeekOf = interval-7;
+		
+		var date1 = new Date();
+		var date2 = new Date();
+		var date3 = new Date();
+		var date4 = new Date();
+		
+		if(intervalExtended == 12) // every x-th last week of the year
+		{
+			date1 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, 0, currentDate.getFullYear()-1);
+			date2 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, 0, currentDate.getFullYear());
+			date3 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, 0, currentDate.getFullYear()+1);
+			date4 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, 0, currentDate.getFullYear()+2);
+		}
+		else if(intervalExtended == 3) // every x-th last week of the quarter
+		{
+			var currentQuarter = ((currentDate.getMonth()-((currentDate.getMonth()+3)%3))/3);
+			var currentQuarterStart = new Date(currentDate.getFullYear(), currentQuarter*3, 1);
+			var previousQuarterStart = new Date(new Date(currentQuarterStart).setMonth(currentQuarterStart.getMonth()-3));
+			var nextQuarterStart = new Date(new Date(currentQuarterStart).setMonth(currentQuarterStart.getMonth()+3));
+			var overNextQuarterStart = new Date(new Date(currentQuarterStart).setMonth(currentQuarterStart.getMonth()+6));
+			
+			date1 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, previousQuarterStart.getMonth(), previousQuarterStart.getFullYear());
+			date2 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, currentQuarterStart.getMonth(), currentQuarterStart.getFullYear());
+			date3 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, nextQuarterStart.getMonth(), nextQuarterStart.getFullYear());
+			date4 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, overNextQuarterStart.getMonth(), overNextQuarterStart.getFullYear());
+		}
+		else // every x-th last week of the month
+		{		
+			date1 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, previousMonth.getMonth(), previousMonth.getFullYear());
+			date2 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, firstDayInCurrentMonth.getMonth(), firstDayInCurrentMonth.getFullYear());
+			date3 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, nextMonth.getMonth(), nextMonth.getFullYear());
+			date4 = nthLastDayInMonth(nthLastWeekOf, dayOfWeek, afterNextMonth.getMonth(), afterNextMonth.getFullYear());
+		}
+		
+		result.push(dateToString(date1));
+		result.push(dateToString(date2));
+		result.push(dateToString(date3));
+		result.push(dateToString(date4));
+	}
+	
+	return result;
+}
+
+function dateToString(inputDate)
+{
+	var dateString = pad( inputDate.getDate(), 2);
+	dateString += '-';
+	dateString += pad( inputDate.getMonth()+1, 2);
+	dateString += '-';
+	dateString += inputDate.getFullYear();
+	return dateString;
+}
+
+function toDays(d) {
+	d = d || 0;
+	return d / 24 / 60 / 60 / 1000;
+}
+
+function daysInMonth(m, y) { 
+	var y = y || new Date(Date.now()).getFullYear(); 
+	return toDays(Date.UTC(y, m + 1, 1) - Date.UTC(y, m, 1)); 
+}
+
+function toUTC(d) { 
+	if(!d || !d.getFullYear) return 0; 
+	return Date.UTC(d.getFullYear(), d.getMonth(),d.getDate());
+}
+
+function daysBetween(d1,d2) { 
+	return toDays(toUTC(d2)-toUTC(d1)); 
+}
+
+function firstDayInMonth(day, m, y) {
+	return new Date(y, m, 1 + (day - new Date(y, m, 1).getDay() + 7) % 7);
+}
+
+function nthLastDayInMonth(n, day, m, y)
+{
+	var d = firstDayInMonth(day, m, y);
+	return new Date(d.getFullYear(), d.getMonth(), (d.getDate() - (n * 7)));
+}
+
+function nthDayInMonth(n, day, m, y) { 	
+	var d = firstDayInMonth(day, m, y);
+	return new Date(d.getFullYear(), d.getMonth(), d.getDate() + (n - 1) * 7);
+}
+
+function everyNthWeek(n, d, givenDate, currentDate, delta)
+{
+	var correctWithDays = d - currentDate.getDay();
+	givenDate = new Date(givenDate.getFullYear(), givenDate.getMonth(), (givenDate.getDate() + (d - givenDate.getDay())));
+	currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), (currentDate.getDate() + (d - currentDate.getDay())));
+	
+	var difference = daysBetween(givenDate, currentDate);
+	if(difference < 0) { difference = difference * -1; }
+	
+	var differenceWithCurrentDate = (difference % (n * 7)) + (delta * n * 7);
+	
+	return new Date(currentDate.getFullYear(), currentDate.getMonth(), (currentDate.getDate() + differenceWithCurrentDate));
 }
