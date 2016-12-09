@@ -6,67 +6,12 @@ var apiArray = require('./trashapis.js');
 var gdates = '';
 var manualInput = false;
 
-function updateAPI(postcode, homenumber, country, callback){
-		//postcode = '5301hBD';
-		//homenumber = '13';
-		//country = 'NL';
-		function asyncLoop(iterations, func, callback) {
-    var index = 0;
-    var done = false;
-    var loop = {
-        next: function() {
-            if (done) {
-                return;
-            }
-
-            if (index < iterations) {
-                index++;
-                func(loop);
-
-            } else {
-                done = true;
-                callback();
-            }
-        },
-
-        iteration: function() {
-            return index - 1;
-        },
-
-        break: function() {
-            done = true;
-            callback();
-        }
-    };
-    loop.next();
-    return loop;
-	}
-
-	asyncLoop(apiArray.length, function(loop){
-
-		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=>{
-
-				if(err){
-					console.log('error while looping');
-					loop.next();
-				}else if(Object.keys(result).length > 0){
-
-					gdates = result;
-					callback(true);
-
-				}else if(Object.keys(result).length === 0){
-
-					loop.next();
-
-				}
-		});
-	},()=>{
-		console.log('Checked all APIs');
-		return callback(false);
-	});
-	}
-
 function init() {
+
+	// Update manual input dates when settings change.
+	Homey.manager('settings').on('set', onSettingsChanged);
+	Homey.manager('flow').on('condition.days_to_collect', flowDaysToCollect);
+	Homey.manager('speech-input').on('speech', parseSpeach);
 	
 	// Check if we have to handle manual input, or automatically.
 	if(Homey.manager('settings').get('manualInput'))
@@ -81,106 +26,20 @@ function init() {
 			manualInput = false;
 		}
 	}
+
+	// Manually kick off data retrieval
+	onUpdateData();
 	
-	if (manualInput === false && 
-		Homey.manager('settings').get('postcode') &&
-		Homey.manager('settings').get('hnumber') &&
-		Homey.manager('settings').get('country')){
-
-		updateAPI(
-			Homey.manager('settings').get('postcode'),
-			Homey.manager('settings').get('hnumber'),
-			Homey.manager('settings').get('country'),
-			function(success){
-				if(success){
-					Homey.log('retrieved house information');
-				}else{
-					Homey.log('house information has not been set');
-				}
-			}
-		);
-	}
-	else
-	{
-		// Generate new days based on manual input
-		GenerateNewDaysBasedOnManualInput();
-		console.log(gdates);
-	}
-
-	// Update manual input dates when settings change.
-	Homey.manager('settings').on('set', function(parameterName)
-	{
-		if(parameterName !== "manualEntryData")
-		{
-			return;
-		}
-		
-		GenerateNewDaysBasedOnManualInput();
-		console.log("new dates generated");
-		console.log(gdates);
-	});
-	
-	// For testing use these variables, will become pulled from settings
-	Homey.manager('flow').on('condition.days_to_collect',function (callback, args){
-
-		Homey.log(Object.keys(gdates));
-
-		if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
-		{
-			return callback( new Error("Invalid address") );
-		}
-
-		var now = new Date();
-		//uncomment below to test on working date(or some other number)
-		//now.setDate(now.getDate() -1);
-		var dateString = '';
-		if(args.when == 'tomorrow'){
-			now.setDate(now.getDate() + 1);
-		}else if(args.when == 'datomorrow'){
-			now.setDate(now.getDate() + 2);
-		}
-
-		dateString += pad( now.getDate(), 2);
-		dateString += '-';
-		dateString += pad( now.getMonth()+1, 2);
-		dateString += '-';
-		dateString += now.getFullYear();
-
-		Homey.log(dateString);
-
-		return callback( null, gdates[ args.trash_type.toUpperCase() ].indexOf(dateString) > -1 );
-	});
-	
-	Homey.manager('speech-input').on('speech', parseSpeach);
-
 	// Every 24 hours update API or manual dates
-	setInterval(function(){
-		
-		// Only do API requests if we don't have manual input to handle.
-		if(manualInput === false)
-		{
-			updateAPI(
-				Homey.manager('settings').get('postcode'),
-				Homey.manager('settings').get('hnumber'),
-				Homey.manager('settings').get('country'),
-				function(){}
-			);
-		}
-		else
-		{
-			// Generate new days based on manual input.
-			GenerateNewDaysBasedOnManualInput();
-			console.log(gdates);
-		}
-
-	}, 86400000); //every day
-
-
+	setInterval(onUpdateData, 86400000); // Every 24-hours
 }
 
 module.exports.init = init;
 module.exports.updateAPI = updateAPI;
 
+/* ******************
+	SPEECH FUNCTIONS
+********************/
 function parseSpeach (speech, callback) {
   Homey.log('parseSpeach()', speech);
   console.log(speech);
@@ -199,10 +58,147 @@ function parseSpeach (speech, callback) {
   callback(null, true);
 }
 
+/* ******************
+	FLOW FUNCTIONS
+********************/
+function flowDaysToCollect(callback, args)
+{
+	// For testing use these variables, will become pulled from settings
+	Homey.log(Object.keys(gdates));
+
+	if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
+	{
+		return callback( new Error("Invalid address") );
+	}
+
+	var now = new Date();
+	//uncomment below to test on working date(or some other number)
+	//now.setDate(now.getDate() -1);
+	if(args.when == 'tomorrow') {
+		now.setDate(now.getDate() + 1);
+	} else if(args.when == 'datomorrow') {
+		now.setDate(now.getDate() + 2);
+	}
+
+	var dateString = dateToString(now);
+	Homey.log(dateString);
+	return callback( null, gdates[ args.trash_type.toUpperCase() ].indexOf(dateString) > -1 );
+}
+
+/* ******************
+	EVENT HANDLERS
+********************/
+function onSettingsChanged(parameterName)
+{
+	if(parameterName !== "manualEntryData")
+	{
+		return;
+	}
+	
+	GenerateNewDaysBasedOnManualInput();
+	console.log("New manual dates generated");
+	console.log(gdates);
+}
+
+function onUpdateData()
+{
+	if (manualInput === false && 
+		Homey.manager('settings').get('postcode') &&
+		Homey.manager('settings').get('hnumber') &&
+		Homey.manager('settings').get('country')){
+
+		updateAPI(
+			Homey.manager('settings').get('postcode'),
+			Homey.manager('settings').get('hnumber'),
+			Homey.manager('settings').get('country'),
+			function(success){
+				if(success){
+					Homey.log('retrieved house information');
+				}else{
+					Homey.log('house information has not been set');
+				}
+			}
+		);
+	}
+	else if(manualInput === true)
+	{
+		// Generate new days based on manual input
+		GenerateNewDaysBasedOnManualInput();
+		console.log(gdates);
+	}
+}
+
+/* ******************
+	COMMON FUNCTIONS
+********************/
 function pad(n, width, z) {
   z = z || '0';
   n = n + '';
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+function dateToString(inputDate)
+{
+	var dateString = pad( inputDate.getDate(), 2);
+	dateString += '-';
+	dateString += pad( inputDate.getMonth()+1, 2);
+	dateString += '-';
+	dateString += inputDate.getFullYear();
+	return dateString;
+}
+
+function updateAPI(postcode, homenumber, country, callback) {
+	//postcode = '5301hBD';
+	//homenumber = '13';
+	//country = 'NL';
+	function asyncLoop(iterations, func, callback) {
+		var index = 0;
+		var done = false;
+		var loop = {
+			next: function() {
+				if (done) {
+					return;
+				}
+
+				if (index < iterations) {
+					index++;
+					func(loop);
+
+				} else {
+					done = true;
+					callback();
+				}
+			},
+
+			iteration: function() {
+				return index - 1;
+			},
+
+			break: function() {
+				done = true;
+				callback();
+			}
+		};
+		loop.next();
+		return loop;
+	}
+
+	asyncLoop(apiArray.length, function(loop) {
+		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=> {
+			if(err) {
+				console.log('error while looping');
+				loop.next();
+			} else if(Object.keys(result).length > 0) {
+				gdates = result;
+				callback(true);
+			} else if(Object.keys(result).length === 0) {
+				loop.next();
+			}
+		});
+	},()=> {
+		console.log('Checked all APIs');
+		return callback(false);
+	});
 }
 
 function GenerateNewDaysBasedOnManualInput()
@@ -214,37 +210,31 @@ function GenerateNewDaysBasedOnManualInput()
 	// Parse dates per type
 	if(manualSettings.gft)
 	{
-		dates.GFT = {};
 		dates.GFT = CalculatePickupDates(manualSettings.gft);
 	}
 	
 	if(manualSettings.paper)
 	{
-		dates.PAPIER = {};
 		dates.PAPIER = CalculatePickupDates(manualSettings.paper);
 	}
 	
 	if(manualSettings.rest)
 	{
-		dates.REST = {};
 		dates.REST = CalculatePickupDates(manualSettings.rest);
 	}
 	
 	if(manualSettings.pmd)
 	{
-		dates.PMD = {};
 		dates.PMD = CalculatePickupDates(manualSettings.pmd);
 	}
 	
 	if(manualSettings.plastic)
 	{
-		dates.PLASTIC = {};
 		dates.PLASTIC = CalculatePickupDates(manualSettings.plastic);
 	}
 	
 	if(manualSettings.textile)
 	{
-		dates.TEXTIEL = {};
 		dates.TEXTIEL = CalculatePickupDates(manualSettings.textile);
 	}
 	
@@ -377,16 +367,6 @@ function CalculatePickupDates(settings)
 	}
 	
 	return result;
-}
-
-function dateToString(inputDate)
-{
-	var dateString = pad( inputDate.getDate(), 2);
-	dateString += '-';
-	dateString += pad( inputDate.getMonth()+1, 2);
-	dateString += '-';
-	dateString += inputDate.getFullYear();
-	return dateString;
 }
 
 function toDays(d) {
