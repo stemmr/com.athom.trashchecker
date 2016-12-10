@@ -16,7 +16,6 @@
 		"pmd": "PMD",
 		"paper": "Paper",
 		"textile": "Textile",
-		"startdate": "starting on",
 		"titlemanualinput": "Manual input",
 		"manualInputField": "Enter dates manually?",
 		"manualInputFieldDescription": "Yes, enter them manually",
@@ -34,12 +33,6 @@
 			"everysecondlast": "Every second last",
 			"everylast": "Every last"
 		},
-		"interval_extra":
-		{
-			"month": "of the month",
-			"quarter": "of the quarter",
-			"year": "of the year"
-		},
 		"dayofweek": {
 			"mo": "Monday",
 			"tu": "Tuesday",
@@ -49,35 +42,90 @@
 			"sa": "Saturday",
 			"su": "Sunday"
 		},
-		"speech":
+		"interval_extra":
 		{
+			"month": "of the month",
+			"quarter": "of the quarter",
+			"year": "of the year"
+		},
+		"startdate": "starting on"
+	},
+	"speech":
+	{
+		"replacequestion": "do you know|can you tell me|can you tell|",
+		"type":
+		{
+			"GFT": "organic",
+			"REST": "residual",
+			"PLASTIC": "plastic",
+			"PMD": "pmd",
+			"PAPIER": "paper",
+			"TEXTIEL": "textile"
+		},
+		"type_multipleother":
+		{
+			"GFT": "green|biological",
+			"REST": "black|residual|grey|gray",
+			"PLASTIC": "elastic|supple",
+			"PMD": "metal|drink carton",
+			"PAPIER": "cardboard|papery",
+			"TEXTIEL": "cloth|yarn"
+		},
+		"questiontype":
+		{
+			"what": "what",
+			"when": "when",
+			"is": "is",
+			"wich": "wich"
+		},
+		"output":
+		{
+			"noknowntrashcollected": "As far as I know there is no trash collected in your neighbourhood",
+			"notrashcollectedonx": "There is no trash collected __time__",
+			"trashtypesycollectedonx": "__time__ __types__ are collected",
+			"trashtypeycollectedonx": "__time__ __type__ is collected",
+			"notrashcollectionforx": "__type__ is not collected in your area",
+			"trashtypexcollectedony": "__type__ is collected __time__",
+			"yesyiscollectedonx": "Yes, __type__ is collected __time__",
+			"noyiscollectedonxbutonz": "No, __type__ is not collected __time__ but __time2__",
+			"and": "and",
+			"next": "next",
+			"on": "on",
+			"days": "days",
+			"in": "in",
 			"type":
 			{
-				"GFT": "Organic",
-				"REST": "Residual",
-				"PLASTIC": "Plastic",
-				"PMD": "PMD",
-				"PAPER": "Paper",
-				"TEXTILE": "Textile"
+				"GFT": "the organic waste",
+				"REST": "the residual waste",
+				"PLASTIC": "the plastic waste",
+				"PMD": "the plastics, metal and drinking carton",
+				"PAPIER": "the old paper",
+				"TEXTIEL": "the textile"
 			},
-			"type_othernamingA":
+			"weekdays":
 			{
-				"GFT": "Green",
-				"REST": "Black",
-				"PLASTIC": "elastic",
-				"PMD": "metal",
-				"PAPER": "cardboard",
-				"TEXTILE": "cloth"
+				"d0": "sunday",
+				"d1": "monday",
+				"d2": "tuesday",
+				"d3": "wednesday",
+				"d4": "thursday",
+				"d5": "friday",
+				"d6": "saturday"
 			},
-			"type_othernamingB":
+			"timeindicator":
 			{
-				"GFT": "biological",
-				"REST": "residual",
-				"PLASTIC": "supple",
-				"PMD": "drink carton",
-				"PAPER": "papery",
-				"TEXTILE": "yarn"
+				"t0": "today",
+				"t1": "tomorrow",
+				"t2": "the day after tomorrow"
 			}
+		}
+	},
+	"error":
+	{
+		"typenotsupported":
+		{ 
+			"addviasettings": "No dates known for this type of trash. Add them manually via the settings page of the app.",
+			"onyouraddress": "This type of trash is not supported on your address."
 		}
 	}
 }
