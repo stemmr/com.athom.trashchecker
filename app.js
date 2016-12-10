@@ -5,13 +5,22 @@ var http = require('http');
 var apiArray = require('./trashapis.js');
 var gdates = '';
 var manualInput = false;
+var supportedTypes = ["GFT","PLASTIC","PAPIER","PMD","REST","TEXTIEL"];
 
 function init() {
-
 	// Update manual input dates when settings change.
 	Homey.manager('settings').on('set', onSettingsChanged);
 	Homey.manager('flow').on('condition.days_to_collect', flowDaysToCollect);
-	Homey.manager('speech-input').on('speech', parseSpeach);
+	//Homey.manager('speech-input').on('speech', parseSpeach);
+	
+	Homey.manager('speech-input').on('speech', (speech, callback) => {
+		console.log("yes speech");
+		
+		Homey.log('parseSpeach()', speech);
+		console.log(speech);
+		
+		callback(null, true);
+	});
 	
 	// Check if we have to handle manual input, or automatically.
 	if(Homey.manager('settings').get('manualInput'))
@@ -40,13 +49,90 @@ module.exports.updateAPI = updateAPI;
 /* ******************
 	SPEECH FUNCTIONS
 ********************/
-function parseSpeach (speech, callback) {
+function parseSpeach(speech, callback) {
   Homey.log('parseSpeach()', speech);
   console.log(speech);
   speech.triggers.some(function (trigger) {
     switch (trigger.id) {
       case 'trash_collected' :
         
+		// TYPE OF QUESTIONS
+		// WHAT type of trash is collected << TODAY | TOMORROW | DAY AFTER TOMORROW >>
+		// WHEN is <<TYPE>> collected?
+		// IS <<TYPE>> colllected << TODAY | TOMORROW | DAY AFTER TOMORROW >>
+				
+		/* ******************
+			FIND TRASH TYPE INDICATOR
+		********************/
+		// Go through types
+		console.log("speech input");
+		var foundType = null;
+		for (var i = 0, len = supportedTypes.length; i < len; i++) {
+			if (transcript.indexOf(__('speech.type.' + supportedTypes[i])) > -1)
+			{
+				foundType = supportedTypes[i];
+				break; // stop loop after first match.
+			}
+			
+			// Other words for types
+			if (transcript.indexOf(__('speech.type_othernamingA.' + supportedTypes[i])) > -1)
+			{
+				foundType = supportedTypes[i];
+				break; // stop loop after first match.
+			}
+			
+			// Other words for types
+			if (transcript.indexOf(__('speech.type_othernamingB.' + supportedTypes[i])) > -1)
+			{
+				foundType = supportedTypes[i];
+				break; // stop loop after first match.
+			}
+		}
+		console.log(foundType);
+		
+		/* ******************
+			FIND TIME INDICATOR
+		********************/
+		// TODAY
+		var checkDate = null;
+		if (transcript.indexOf(__('speech.today')) > -1)
+		{
+			checkDate = new Date();
+		}
+		
+		// TOMORROW
+		if (transcript.indexOf(__('speech.tomorrow')) > -1)
+		{
+			checkDate = new Date(now).setDate(now.getDate() + 1);
+		}
+		
+		// DAY AFTER TOMORROW
+		if (transcript.indexOf(__('speech.dayaftertomorrow')) > -1)
+		{
+			checkDate = new Date(now).setDate(now.getDate() + 2);
+		}
+		console.log(checkDate);
+		
+		if(checkDate != null)
+		{
+			var typeCollectedOnThisDay = [];
+			
+			// Go through types
+			for (var i = 0, len = supportedTypes.length; i < len; i++) {
+				if(gdates[ supportedTypes[i] ].indexOf(dateToString(checkDate)) > -1)
+				{
+					typeCollectedOnThisDay = __('speech.type.' + supportedTypes[i]);
+				}
+			}
+			
+			// SAY SOMETHING BEAUTIFUL
+			
+			return true;
+		}
+		
+		
+		
+		
 		console.log(speech);
 
         // Only execute 1 trigger
@@ -64,7 +150,7 @@ function parseSpeach (speech, callback) {
 function flowDaysToCollect(callback, args)
 {
 	// For testing use these variables, will become pulled from settings
-	Homey.log(Object.keys(gdates));
+	//Homey.log(Object.keys(gdates));
 
 	if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
 	{
@@ -81,7 +167,7 @@ function flowDaysToCollect(callback, args)
 	}
 
 	var dateString = dateToString(now);
-	Homey.log(dateString);
+	//Homey.log(dateString);
 	return callback( null, gdates[ args.trash_type.toUpperCase() ].indexOf(dateString) > -1 );
 }
 

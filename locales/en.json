@@ -48,6 +48,36 @@
 			"fr": "Friday",
 			"sa": "Saturday",
 			"su": "Sunday"
+		},
+		"speech":
+		{
+			"type":
+			{
+				"GFT": "Organic",
+				"REST": "Residual",
+				"PLASTIC": "Plastic",
+				"PMD": "PMD",
+				"PAPER": "Paper",
+				"TEXTILE": "Textile"
+			},
+			"type_othernamingA":
+			{
+				"GFT": "Green",
+				"REST": "Black",
+				"PLASTIC": "elastic",
+				"PMD": "metal",
+				"PAPER": "cardboard",
+				"TEXTILE": "cloth"
+			},
+			"type_othernamingB":
+			{
+				"GFT": "biological",
+				"REST": "residual",
+				"PLASTIC": "supple",
+				"PMD": "drink carton",
+				"PAPER": "papery",
+				"TEXTILE": "yarn"
+			}
 		}
 	}
 }

@@ -35,10 +35,10 @@
 	
 	"speech":[
 		{
-			"id": "trash_collected",
-			"importance": 0.7,
+			"id": "trash",
+			"importance": 0.9,
 			"triggers" : {
-				"en" : ["collected", "trash", "container"],
+				"en" : ["collected", "collects", "trash", "container"],
 				"nl" : ["opgehaald", "container", "afvalbak", "vuilnisbak"]
 			}
 		}
