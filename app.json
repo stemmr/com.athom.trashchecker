@@ -1,142 +1,150 @@
 {
-    "id": "com.athom.trashchecker",
-    "name": {
-        "en": "Trashcan Reminder",
-		"nl": "Afval Herinnering"
-    },
-    "version": "0.2.0",
-    "compatibility": "0.x || 1.x",
-    "author": {
-        "name": "Arthur Stemmer",
-        "email": "apstemmer@hotmail.com"
-    },	
-	"permissions": [
-	   "homey:manager:speech-output",
-	   "homey:manager:speech-input"
-	 ],
-	"contributors": {
-        "developers": [
-            {
-                "name": "Marcel Timmermans",
-				"email": "marcel@timmermans.us"
+   "id":"com.athom.trashchecker",
+   "name":{
+      "en":"Trashcan Reminder",
+      "nl":"Afval Herinnering"
+   },
+   "version":"0.2.0",
+   "compatibility":"0.x || 1.x",
+   "author":{
+      "name":"Arthur Stemmer",
+      "email":"apstemmer@hotmail.com"
+   },
+   "permissions":[
+      "homey:manager:speech-output",
+      "homey:manager:speech-input"
+   ],
+   "contributors":{
+      "developers":[
+         {
+            "name":"Marcel Timmermans",
+            "email":"marcel@timmermans.us"
+         },
+         {
+            "name":"Robert Raaijmakers"
+         }
+      ]
+   },
+   "description":{
+      "en":"Use this app to check when your trash will be collected",
+      "nl":"Gebruik deze app om er achter te komen wanneer uw afval thuis wordt opgehaald"
+   },
+   "category":"tools",
+   "images":{
+      "large":"./assets/images/large.png",
+      "small":"./assets/images/small.png"
+   },
+   "credits":{
+      "icon":"Pham Thi Dieu Linh"
+   },
+   "speech":[
+      {
+         "id":"trash_collected",
+         "importance":0.8,
+         "triggers":{
+            "en":[
+               "trash collected",
+               "collected",
+               "trash",
+               "container",
+               "residual waste",
+               "organic waste"
+            ],
+            "nl":[
+               "opgehaald",
+               "container",
+               "afvalbak",
+               "vuilnisbak"
+            ]
+         }
+      }
+   ],
+   "flow":{
+      "conditions":[
+         {
+            "id":"days_to_collect",
+            "title":{
+               "en":"Trash will !{{|not}} be collected",
+               "nl":"Afval wordt !{{|niet}} opgehaald"
             },
-			{
-                "name": "Robert Raaijmakers"
-            }
-        ]
-    },
-    "description":{
-        "en":"Use this app to check when your trash will be collected",
-        "nl":"Gebruik deze app om er achter te komen wanneer uw afval thuis wordt opgehaald"
-      },
-
-    "category":"tools",
-
-    "images":{
-        "large":"./assets/images/large.png",
-        "small":"./assets/images/small.png"
-    },
-
-    "credits":{
-        "icon":"Pham Thi Dieu Linh"
-    },
-	
-	"speech":[
-		{
-			"id": "trash_collected",
-			"importance": 0.8,
-			"triggers" : {
-				"en" : ["trash collected", "collected", "trash", "container", "residual waste", "organic waste"],
-				"nl" : ["opgehaald", "container", "afvalbak", "vuilnisbak"]
-			}
-		}
-	],
-
-    "flow" : {
-        "conditions":[
-            {
-                "id":"days_to_collect",
-                "title":{
-                    "en":"Trash will !{{|not}} be collected",
-                    "nl":"Afval wordt !{{|niet}} opgehaald"
-                },
-                "args" :[
-                {
-                    "name":"when",
-                    "type":"dropdown",
-                    "values":[
-                        {
-                            "id":"today",
-                            "label":{
-                                "en":"Today",
-                                "nl":"Vandaag"
-                            }
-                        },
-                        {
-                            "id":"tomorrow",
-                            "label":{
-                                "en":"Tomorrow",
-                                "nl":"Morgen"
-                            }
-                        },
-                        {
-                            "id":"datomorrow",
-                            "label":{
-                                "en":"Day after tomorrow",
-                                "nl":"Overmorgen"
-                            }
+            "args":[
+               {
+                  "name":"when",
+                  "type":"dropdown",
+                  "values":[
+                     {
+                        "id":"today",
+                        "label":{
+                           "en":"Today",
+                           "nl":"Vandaag"
                         }
-                    ]
-                },
-                {
-                    "name":"trash_type",
-                    "type":"dropdown",
-                    "values":[
-                        {
-                          "id":"REST",
-                          "label":{
-                            "en":"Residual",
-                            "nl":"Rest"
-                          }
-                        },
-                        {
-                            "id":"GFT",
-                            "label" : {
-                                "en":"Organic Waste",
-                                "nl":"GFT"
-                                }
-                        },
-                        {
-                            "id":"PAPIER",
-                            "label" : {
-                                "en":"Paper",
-                                "nl":"Papier"
-                                }
-                        },
-                        {
-                            "id":"PLASTIC",
-                            "label" : {
-                                "en" : "Plastic",
-                                "nl" : "Plastic"
-                            }
-                        },
-                        {
-                          "id":"PMD",
-                          "label":{
-                            "en":"PMD",
-                            "nl":"PMD"
-                          }
-                        },
-                        {
-                          "id":"TEXTIEL",
-                          "label":{
-                            "en":"Textiles",
-                            "nl":"Textiel"
-                          }
+                     },
+                     {
+                        "id":"tomorrow",
+                        "label":{
+                           "en":"Tomorrow",
+                           "nl":"Morgen"
                         }
-                    ]
-                }]
-            }
-        ]
-    }
+                     },
+                     {
+                        "id":"datomorrow",
+                        "label":{
+                           "en":"Day after tomorrow",
+                           "nl":"Overmorgen"
+                        }
+                     }
+                  ]
+               },
+               {
+                  "name":"trash_type",
+                  "type":"dropdown",
+                  "values":[
+                     {
+                        "id":"REST",
+                        "label":{
+                           "en":"Residual",
+                           "nl":"Rest"
+                        }
+                     },
+                     {
+                        "id":"GFT",
+                        "label":{
+                           "en":"Organic Waste",
+                           "nl":"GFT"
+                        }
+                     },
+                     {
+                        "id":"PAPIER",
+                        "label":{
+                           "en":"Paper",
+                           "nl":"Papier"
+                        }
+                     },
+                     {
+                        "id":"PLASTIC",
+                        "label":{
+                           "en":"Plastic",
+                           "nl":"Plastic"
+                        }
+                     },
+                     {
+                        "id":"PMD",
+                        "label":{
+                           "en":"PMD",
+                           "nl":"PMD"
+                        }
+                     },
+                     {
+                        "id":"TEXTIEL",
+                        "label":{
+                           "en":"Textiles",
+                           "nl":"Textiel"
+                        }
+                     }
+                  ]
+               }
+            ]
+         }
+      ]
+   }
 }
