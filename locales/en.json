@@ -52,7 +52,7 @@
 	},
 	"speech":
 	{
-		"replacequestion": "do you know|can you tell me|can you tell|",
+		"replacequestion": "do you know|can you tell me|can you tell|question",
 		"type":
 		{
 			"GFT": "organic",
@@ -76,7 +76,7 @@
 			"what": "what",
 			"when": "when",
 			"is": "is",
-			"wich": "wich"
+			"which": "which"
 		},
 		"output":
 		{
@@ -99,7 +99,7 @@
 				"REST": "the residual waste",
 				"PLASTIC": "the plastic waste",
 				"PMD": "the plastics, metal and drinking carton",
-				"PAPIER": "the old paper",
+				"PAPIER": "the paper",
 				"TEXTIEL": "the textile"
 			},
 			"weekdays":

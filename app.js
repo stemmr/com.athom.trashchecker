@@ -141,7 +141,7 @@ function parseSpeach(speech, callback) {
 		********************/
 		var questionType = 0;
 		if(newTranscript.toLowerCase().startsWith(__('speech.questiontype.what')) || 
-			newTranscript.toLowerCase().startsWith(__('speech.questiontype.wich')))
+			newTranscript.toLowerCase().startsWith(__('speech.questiontype.which')))
 		{
 			questionType = 1;
 		}

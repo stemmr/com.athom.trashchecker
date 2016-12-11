@@ -44,9 +44,9 @@
 	"speech":[
 		{
 			"id": "trash_collected",
-			"importance": 0.9,
+			"importance": 0.8,
 			"triggers" : {
-				"en" : ["trash collected", "collects", "trash", "container"],
+				"en" : ["trash collected", "collected", "trash", "container", "residual waste", "organic waste"],
 				"nl" : ["opgehaald", "container", "afvalbak", "vuilnisbak"]
 			}
 		}
