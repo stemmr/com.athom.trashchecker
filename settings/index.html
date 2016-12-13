@@ -1,117 +1,102 @@
 <html>
 <head>
-<style>
-
-
-</style>
+    <style>
+    </style>
 </head>
 <body>
-	<h2 data-i18n="settings.title">
-	</h2>
+<h2 data-i18n="settings.title"></h2>
 
-    <p style="display:block" data-i18n="settings.description"></p>
+<p style="display:block" data-i18n="settings.description"></p>
 
-	<fieldset>
-		<legend></legend>
-        <div class="field row">
-            <label for="postcode" data-i18n="settings.postcode"></label>
-            <input placeholder="1234AB" id="postcode" maxlength="6" type="text" value=""/>
+<fieldset>
+    <legend></legend>
+    <div class="field row">
+        <label for="postcode" data-i18n="settings.postcode"></label>
+        <input placeholder="1234AB" id="postcode" maxlength="6" type="text" value=""/>
+    </div>
+    <div class="field row">
+        <label for="number" data-i18n="settings.hnumber"></label>
+        <input placeholder="42" id="number" type="text" value=""/>
+    </div>
+    <div class="field row">
+
+        <label style="float:left" for="country" data-i18n="settings.country"></label>
+        <div style="float:left">
+            <input style="width:10px" checked="checked" id="NL" name="country" type="radio" value="NL"/><span class="name">NL</span><br>
+            <input style="width:10px" id="BE" name="country" type="radio" value="NL"/><span class="name">BE</span>
         </div>
-        <div class="field row">
-            <label for="number" data-i18n="settings.hnumber"></label>
-            <input placeholder="42" id="number" type="text" value=""/>
-        </div>
-        <div class="field row">
 
-	            <label style="float:left" for="country" data-i18n="settings.country"></label>
-	            <div style="float:left">
-		            <input  style="width:10px" checked="checked" id="NL" name="country" type="radio" value="NL"/><span class="name">NL</span><br>
-		            <input  style="width:10px" id="BE" name="country" type="radio" value="NL"/><span class="name">BE</span>
-	            </div>
+    </div>
+    <span id="resp"></span>
+</fieldset>
+<button class="left" style="display:block" onclick="save()" data-i18n="settings.save"></button>
 
-        </div>
-        <span id="resp"></span>
-
-    </fieldset>
-    <button class="left" style="display:block" onclick="save()" data-i18n="settings.save" ></button>
-
-
-
-
-
-
-	<script type="text/javascript">
-        function onHomeyReady(){
-
-        	Homey.get('postcode', function(err, postcode){
-        		if(err)
-        		{
-        			console.log("not working");
-        			return console.error(err);
-        		}
-        		document.getElementById('postcode').value = postcode;
-        	});
-
-        	Homey.get('hnumber', function(err, housenumber){
-        		if(err) return console.error(err);
-        		document.getElementById('number').value = housenumber;
-        	});
-
-        	Homey.get('country',function(err, country){
-        		console.log(country);
-        		if(err){
-        			return console.error(err);
-        		}
-        		if(country == 'NL' || country == 'BE'){
-        			document.getElementById(country).checked = true;
-        		}else{
-        			document.getElementById('NL').checked = true;
-        		}
-        	});
-
-            Homey.ready()
-        }
-
-        function save() {
-					var resp = document.getElementById("resp");
-					resp.style.color = 'black';
-					resp.innerHTML = __('settings.checking');
-        	var pc = document.getElementById('postcode').value;
-        	var num = document.getElementById('number').value;
-
-        	var country;
-
-        	if(document.getElementById('NL').checked){
-            	country = 'NL';
-            }else if(document.getElementById('BE').checked){
-            	country = 'BE';
+<script type="text/javascript">
+    function onHomeyReady() {
+        Homey.get('postcode', function (err, postcode) {
+            if (err) {
+                console.log("not working");
+                return console.error(err);
             }
+            document.getElementById('postcode').value = postcode;
+        });
 
+        Homey.get('hnumber', function (err, housenumber) {
+            if (err) return console.error(err);
+            document.getElementById('number').value = housenumber;
+        });
 
-        	Homey.api('POST', '/', {
+        Homey.get('country', function (err, country) {
+            console.log(country);
+            if (err) {
+                return console.error(err);
+            }
+            if (country == 'NL' || country == 'BE') {
+                document.getElementById(country).checked = true;
+            } else {
+                document.getElementById('NL').checked = true;
+            }
+        });
 
-        		"postcode":pc,
-        		"housenumber":num,
-        		"country":country
+        Homey.ready()
+    }
 
-        	},function(err,result){
-        		if(err) return console.log(err);
+    function save() {
+        var resp = document.getElementById("resp");
+        resp.style.color = 'black';
+        resp.innerHTML = __('settings.checking');
 
-        		if(result){
-							resp.style.color = 'green';
-							//resp.data-i18n = 'settings.update'
-							resp.innerHTML = __('settings.update') + pc + ', ' + num + ' in ' + country;
-		            Homey.set('postcode',pc);
-		            Homey.set('hnumber',num);
-		            Homey.set('country',country);
-	        	}else{
-								resp.innerHTML = __('settings.fail');
-								resp.style.color = 'red';
-	        	}
-        		//Do stuff if truw/false (kruis,vinkje)
-        		console.log(result);
-        	});
+        var pc = document.getElementById('postcode').value;
+        var num = document.getElementById('number').value;
+
+        var country;
+
+        if (document.getElementById('NL').checked) {
+            country = 'NL';
+        } else if (document.getElementById('BE').checked) {
+            country = 'BE';
         }
-    </script>
-<body>
+
+        Homey.api('POST', '/', {
+            "postcode": pc,
+            "housenumber": num,
+            "country": country
+        }, function (err, result) {
+            if (err) return console.log(err);
+
+            if (result) {
+                resp.style.color = 'green';
+                //resp.data-i18n = 'settings.update'
+                resp.innerHTML = __('settings.update') + pc + ', ' + num + ' in ' + country;
+                Homey.set('postcode', pc);
+                Homey.set('hnumber', num);
+                Homey.set('country', country);
+            } else {
+                resp.innerHTML = __('settings.fail');
+                resp.style.color = 'red';
+            }
+        });
+    }
+</script>
+</body>
 </html>
