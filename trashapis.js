@@ -1,7 +1,10 @@
+"use strict";
+
 var apiList = [];
 var http = require('http');
 var request = require('request');
 var cheerio = require('cheerio');
+var ical = require('ical');
 
 function afvalapp(postcode, homenumber, country, callback) {
     var options = {
@@ -50,6 +53,7 @@ function mijnAfvalWijzer(postcode, housenumber, country, callback) {
     var fDates = {};
     if (country !== "NL") {
         callback(new Error('unsupported country'));
+        return;
     }
 
     request(`http://www.mijnafvalwijzer.nl/nl/${postcode}/${housenumber}/`, function (err, res, body) {
@@ -100,6 +104,7 @@ function afvalwijzerArnhem(postcode, housenumber, country, callback) {
     var fDates = {};
     if (country !== "NL") {
         callback(new Error('unsupported country'));
+        return;
     }
 
     var url = `http://www.afvalwijzer-arnhem.nl/applicatie?ZipCode=${postcode}&HouseNumber=${housenumber}&HouseNumberAddition=`;
@@ -138,13 +143,59 @@ function afvalwijzerArnhem(postcode, housenumber, country, callback) {
     })
 }
 
+function cyclusnv(postcode, housenumber, country, callback) {
+    var fDates = {};
+    if (country !== "NL") {
+        callback(new Error('unsupported country'));
+        return;
+    }
+
+    const r = request.defaults({jar: true});
+    r.post({
+        url: 'http://afvalkalender.cyclusnv.nl/login.php',
+        followAllRedirects: true,
+        form: {
+            postcode: postcode,
+            huisnummer: housenumber,
+            toevoeging: '',
+            toon: true
+        }
+    }, function (err, res, body) {
+        if (!err && res.statusCode == 200) {
+            r.get(`http://afvalkalender.cyclusnv.nl/download_ical.php?p=${postcode}&h=${housenumber}&t=`, function (err, res, body) {
+                if (!err && res.statusCode == 200) {
+                    const dates = {};
+                    const entries = ical.parseICS(body);
+                    for (let i in entries) {
+                        const entry = entries[i];
+                        const dateStr = ('0' + entry.start.getDate()).slice(-2) + '-' + (('0' + (entry.start.getMonth() + 1)).slice(-2)) + '-' + entry.start.getFullYear();
+
+                        if (entry.description.indexOf('GFT') !== -1) {
+                            if (!dates.GFT) dates.GFT = [];
+                            dates.GFT.push(dateStr);
+                        } else if (entry.description.indexOf('Rest') !== -1) {
+                            if (!dates.REST) dates.REST = [];
+                            dates.REST.push(dateStr);
+                        } else if (entry.description.indexOf('Plastic') !== -1) {
+                            if (!dates.PLASTIC) dates.PLASTIC = [];
+                            dates.PLASTIC.push(dateStr);
+                        }
+                    }
+
+                    return callback(null, dates);
+                } else {
+                    return callback(new Error('Unable to download ical file'));
+                }
+            });
+        } else {
+            return callback(new Error('Unable to login'));
+        }
+    });
+}
+
 function dateFormat(date) {
     var ad = date.split('-');
-    var result = ('0' + ad[0]).slice(-2) + '-' + ('0' + ad[1]).slice(-2) + '-' + ad[2];
-    console.log(result);
-
-    // add leading zero if required
-    return result;
+    return ('0' + ad[0]).slice(-2) + '-' + ('0' + ad[1]).slice(-2) + '-' + ad[2];
 }
 
 function parseDate(dateString) {
@@ -182,5 +233,6 @@ function parseDate(dateString) {
 apiList.push(afvalapp);
 apiList.push(mijnAfvalWijzer);
 apiList.push(afvalwijzerArnhem);
+apiList.push(cyclusnv);
 
 module.exports = apiList;

@@ -6,5 +6,6 @@ Unfortunately not all cities work with the Trashcan Reminder, if you can find yo
 
 - [mijnAfvalWijzer](http://www.mijnafvalwijzer.nl)
 - [deAfvalApp](http://www.deafvalapp.nl/calendar/kalender_start.jsp)
+- [Cyclus](http://afvalkalender.cyclusnv.nl/)
 
 If you wish to contribute to the project (for example by adding support for a city) I would advise you to take a look at [this explanation](https://github.com/apstemmer/com.athom.trashchecker/blob/master/developers)
