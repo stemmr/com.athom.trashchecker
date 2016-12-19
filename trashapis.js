@@ -177,14 +177,6 @@ function twenteMilieu(postcode, housenumber, country, callback){
   endDate = dateFormat(endDate.setDate(endDate.getDate() + 30), "yyyy-mm-dd");
   // console.log("endDate is: " + endDate);
 
-  var country = "NL";
-
-  var fDates = {};
-  if(country !== "NL"){
-    console.log('unsupported country');
-    callback(new Error('unsupported country'));
-  }
-
   var post_data1 = `companyCode=8d97bb56-5afd-4cbc-a651-b4f7314264b4&postCode=${postcode}&houseNumber=${housenumber}&houseLetter=&houseNumberAddition=`;
   var post_options1 = {
     host: 'wasteapi.2go-mobile.com',
@@ -299,7 +291,12 @@ function twenteMilieu(postcode, housenumber, country, callback){
 }
 
 function gemeenteHellendoorn(postcode, housenumber, country, callback){
+  if(country !== "NL"){
+    console.log('unsupported country');
+    callback(new Error('unsupported country'));
+  }
   var DOMParser = new (require('xmldom')).DOMParser;
+
   var startDate = new Date();
   startDate = dateFormat(startDate.setDate(startDate.getDate() - 14), "yyyy-mm-dd");
   // console.log("startDate is: " + startDate);
