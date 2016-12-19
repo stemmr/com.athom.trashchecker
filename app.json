@@ -4,7 +4,7 @@
       "en":"Trashcan Reminder",
       "nl":"Afval Herinnering"
    },
-   "version":"0.2.0",
+   "version":"0.2.1",
    "compatibility":"0.x || 1.x",
    "author":{
       "name":"Arthur Stemmer",
@@ -22,6 +22,10 @@
          },
          {
             "name":"Robert Raaijmakers"
+         },
+         {
+            "name":"Remco Hannink",
+            "email":"remco@hannink.org"
          }
       ]
    },
