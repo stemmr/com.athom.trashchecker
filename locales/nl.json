@@ -66,7 +66,7 @@
 		{
 			"GFT": "groen|tuinafval|groene|groente|fruit",
 			"REST": "zwart|grijs|grijze|restafval",
-			"PLASTIC": "plastic",
+			"PLASTIC": "plastic|oranje",
 			"PMD": "metaal|drinkpak|drink karton",
 			"PAPIER": "blauw|karton",
 			"TEXTIEL": "kleding|kledij"
@@ -123,7 +123,7 @@
 	"error":
 	{
 		"typenotsupported":
-		{ 
+		{
 			"addviasettings": "Geen ophaaldatum bekend voor dit type afval. Voeg deze handmatig toe via de instellingen pagina van de app.",
 			"onyouraddress": "Dit type afval wordt niet door de API ondersteund op jouw adres."
 		}

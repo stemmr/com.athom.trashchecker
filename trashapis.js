@@ -308,8 +308,8 @@ function gemeenteHellendoorn(postcode, housenumber, country, callback){
   var body1 = '<?xml version="1.0" encoding="utf-8"?>' +
              '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+
              '<soap12:Body><GetAddresses xmlns="http://www.meurs-software.nl/afval-ris">'+
-             '<ZipCode>7441DH</ZipCode>'+
-             '<HouseNumber>36</HouseNumber>'+
+             `<ZipCode>${postcode}</ZipCode>`+
+             `<HouseNumber>${housenumber}</HouseNumber>`+
              '<HouseLetter></HouseLetter>'+
              '</GetAddresses></soap12:Body></soap12:Envelope>';
 
@@ -330,115 +330,180 @@ function gemeenteHellendoorn(postcode, housenumber, country, callback){
   var uniqueID = "";
 
   var req1 = http.request( postRequest1, function( res1 )    {
-     // console.log( res1.statusCode );
-     var buffer1 = "";
-     res1.on( "data", function( data1 ) { buffer1 = buffer1 + data1; } );
-     res1.on( "end", function( data1 ) {
-       // console.log( buffer1 );
-       var doc1 = DOMParser.parseFromString(buffer1,"text/xml");
-       if (doc1.getElementsByTagName("StatusCode")[0].childNodes[0].data == "Ok"){
-         var uniqueIDObject = doc1.getElementsByTagName("UniqueId");
-         uniqueID = uniqueIDObject[0].childNodes[0].data;
-         var body2 = '<?xml version="1.0" encoding="utf-8"?>' +
-                    '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+
-                    '<soap12:Body><GetContainerDates xmlns="http://www.meurs-software.nl/afval-ris">'+
-                    `<UniqueAddressId>${uniqueID}</UniqueAddressId>`+
-                    `<Start>${startDate}</Start>`+
-                    `<End>${endDate}</End>`+
-         		       '</GetContainerDates></soap12:Body></soap12:Envelope>';
+     if (res1.statusCode == 200) {
+       // console.log( res1.statusCode );
+       console.log("Aanroep Hellendoorn met: " + postcode + housenumber + country);
+       var buffer1 = "";
+       res1.on( "data", function( data1 ) { buffer1 = buffer1 + data1; } );
+       res1.on( "end", function( data1 ) {
+         // console.log( buffer1 );
+         var doc1 = DOMParser.parseFromString(buffer1,"text/xml");
+         // console.log("statusCode is: " + doc1.getElementsByTagName("StatusCode")[0].childNodes[0].data);
+         if (doc1.getElementsByTagName("StatusCode")[0].childNodes[0].data == "Ok" && doc1.getElementsByTagName("Addresses")[0].childNodes.length > 0){
+           var uniqueIDObject = doc1.getElementsByTagName("UniqueId");
+           uniqueID = uniqueIDObject[0].childNodes[0].data;
+           var body2 = '<?xml version="1.0" encoding="utf-8"?>' +
+                      '<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'+
+                      '<soap12:Body><GetContainerDates xmlns="http://www.meurs-software.nl/afval-ris">'+
+                      `<UniqueAddressId>${uniqueID}</UniqueAddressId>`+
+                      `<Start>${startDate}</Start>`+
+                      `<End>${endDate}</End>`+
+           		       '</GetContainerDates></soap12:Body></soap12:Envelope>';
 
-         var postRequest2 = {
-             host: "hellendoornportal-srvc.2go-mobile.com",
-             path: "/ReportService.asmx",
-             port: 80,
-             method: "POST",
-             headers: {
-                 'Cookie': "cookie",
-                 'Content-Type': 'text/xml',
-                 'Content-Length': Buffer.byteLength(body2)
-             }
-         };
-         var req2 = http.request( postRequest2, function( res2 )    {
-            // console.log( res2.statusCode );
-            var buffer2 = "";
-            // console.log("uniqueID is: ", uniqueID);
-            res2.on( "data", function( data2 ) {buffer2 = buffer2 + data2; });
-            res2.on( "end", function( data2 ) {
-              var doc2 = DOMParser.parseFromString(buffer2,"text/xml");
-              if (doc2.getElementsByTagName("StatusCode")[0].childNodes[0].data == "Ok"){
-                var trashCodeObject = doc2.getElementsByTagName("Code");
-                var numberOfCodes = trashCodeObject.length;
-                     // console.log("Code is: ", doc.getElementsByTagName("Code")[0].childNodes[0].data);
-                // console.log("Aantal gevonden Code velden: ", numberOfCodes);
-                for (i=0; i < numberOfCodes; i++){
-                  switch(trashCodeObject[i].childNodes[0].data)
-                  {
-                    case "00":
-                      // console.log("REST:");
-                      if(!fDates.REST) fDates.REST = [];
-                      break;
-                   case "11":
-                     // console.log("GFT:");
-                     if(!fDates.GFT) fDates.GFT = [];
-                     break;
-                   case "22":
-                     // console.log("PAPIER:");
-                     if(!fDates.PAPIER) fDates.PAPIER = [];
-                     break;
-                   case "66":
-                     // console.log("PLASTIC:");
-                     if(!fDates.PLASTIC) fDates.PLASTIC = [];
-                     break;
-                   }
+           var postRequest2 = {
+               host: "hellendoornportal-srvc.2go-mobile.com",
+               path: "/ReportService.asmx",
+               port: 80,
+               method: "POST",
+               headers: {
+                   'Cookie': "cookie",
+                   'Content-Type': 'text/xml',
+                   'Content-Length': Buffer.byteLength(body2)
+               }
+           };
+           var req2 = http.request( postRequest2, function( res2 )    {
+              if (res2.statusCode == 200){
+                // console.log( res2.statusCode );
+                var buffer2 = "";
+                // console.log("uniqueID is: ", uniqueID);
+                res2.on( "data", function( data2 ) {buffer2 = buffer2 + data2; });
+                res2.on( "end", function( data2 ) {
+                  var doc2 = DOMParser.parseFromString(buffer2,"text/xml");
+                  if (doc2.getElementsByTagName("StatusCode")[0].childNodes[0].data == "Ok"){
+                    var trashCodeObject = doc2.getElementsByTagName("Code");
+                    var numberOfCodes = trashCodeObject.length;
+                         // console.log("Code is: ", doc.getElementsByTagName("Code")[0].childNodes[0].data);
+                    // console.log("Aantal gevonden Code velden: ", numberOfCodes);
+                    for (i=0; i < numberOfCodes; i++){
+                      switch(trashCodeObject[i].childNodes[0].data)
+                      {
+                        case "00":
+                          // console.log("REST:");
+                          if(!fDates.REST) fDates.REST = [];
+                          break;
+                       case "11":
+                         // console.log("GFT:");
+                         if(!fDates.GFT) fDates.GFT = [];
+                         break;
+                       case "22":
+                         // console.log("PAPIER:");
+                         if(!fDates.PAPIER) fDates.PAPIER = [];
+                         break;
+                       case "66":
+                         // console.log("PLASTIC:");
+                         if(!fDates.PLASTIC) fDates.PLASTIC = [];
+                         break;
+                       }
 
-                  var numberOfDates = trashCodeObject[i].parentNode.lastChild.childNodes.length;
-                  // console.log("Aantal gevonden Datums: ", numberOfDates);
-                  for (j=0; j < numberOfDates; j++){
-                    var date = trashCodeObject[i].parentNode.lastChild.childNodes[j].childNodes[0].nodeValue;
-                    // console.log(dateFormat(date, "dd-mm-yyyy"));
-                    switch(trashCodeObject[i].childNodes[0].data)
-                    {
-                      case "00":
-                        if(!fDates.REST) fDates.REST = [];
-                        fDates.REST.push(dateFormat(date, "dd-mm-yyyy"));
-                        break;
-                     case "11":
-                       if(!fDates.GFT) fDates.GFT = [];
-                       fDates.GFT.push(dateFormat(date, "dd-mm-yyyy"));
-                       break;
-                     case "22":
-                       if(!fDates.PAPIER) fDates.PAPIER = [];
-                       fDates.PAPIER.push(dateFormat(date, "dd-mm-yyyy"));
-                       break;
-                     case "66":
-                       if(!fDates.PLASTIC) fDates.PLASTIC = [];
-                       fDates.PLASTIC.push(dateFormat(date, "dd-mm-yyyy"));
-                       break;
-                     }
-                     // console.log(dateFormat(date, "dd-mm-yyyy"));
+                      var numberOfDates = trashCodeObject[i].parentNode.lastChild.childNodes.length;
+                      // console.log("Aantal gevonden Datums: ", numberOfDates);
+                      for (j=0; j < numberOfDates; j++){
+                        var date = trashCodeObject[i].parentNode.lastChild.childNodes[j].childNodes[0].nodeValue;
+                        // console.log(dateFormat(date, "dd-mm-yyyy"));
+                        switch(trashCodeObject[i].childNodes[0].data)
+                        {
+                          case "00":
+                            if(!fDates.REST) fDates.REST = [];
+                            fDates.REST.push(dateFormat(date, "dd-mm-yyyy"));
+                            break;
+                         case "11":
+                           if(!fDates.GFT) fDates.GFT = [];
+                           fDates.GFT.push(dateFormat(date, "dd-mm-yyyy"));
+                           break;
+                         case "22":
+                           if(!fDates.PAPIER) fDates.PAPIER = [];
+                           fDates.PAPIER.push(dateFormat(date, "dd-mm-yyyy"));
+                           break;
+                         case "66":
+                           if(!fDates.PLASTIC) fDates.PLASTIC = [];
+                           fDates.PLASTIC.push(dateFormat(date, "dd-mm-yyyy"));
+                           break;
+                         }
+                         // console.log(dateFormat(date, "dd-mm-yyyy"));
 
+                      }
+                           // console.log(trashCodeObject[i].getElementsByTagName("string")[0]);
+                    }
+                    console.log(fDates);
+                    return callback(null, fDates);
+                  } else {
+                    console.log("Ophalen van ophaaldata is mislukt!");
+                    return callback(new Error('Invalid location'));
                   }
-                       // console.log(trashCodeObject[i].getElementsByTagName("string")[0]);
-                }
-                console.log(fDates);
-                return callback(null, fDates);
+                });
               } else {
-                console.log("Ophalen van ophaaldata is mislukt!");
+                console.log("Er is iets fout gegaan!");
                 return callback(new Error('Invalid location'));
               }
             });
-          });
-         req2.write( body2 );
-         req2.end();
-       } else {
-         console.log("Er is iets fout gegaan!");
-         return callback(new Error('Invalid location'));
-       }
-     });
+           req2.write( body2 );
+           req2.end();
+         } else {
+           console.log("Er is iets fout gegaan!");
+           return callback(new Error('Invalid location'));
+         }
+       });
+     } else {
+       console.log("Er is iets fout gegaan!");
+       return callback(new Error('Invalid location'));
+     }
   });
   req1.write( body1 );
   req1.end();
 
+}
+
+function recycleManager(postcode, housenumber, country, callback){
+  if(country !== "NL"){
+    console.log('unsupported country');
+    callback(new Error('unsupported country'));
+  }
+  var fDates = {};
+  console.log("Recyclemanager met: " + postcode + " " + housenumber);
+  var url = `https://vpn-wec-api.recyclemanager.nl/v2/calendars?postalcode=${postcode}&number=${housenumber}`;
+
+  request(url, function(err, res, body){
+    if(!err && res.statusCode == 200){
+      // console.log(res);
+      var obj1 = JSON.parse(res.body);
+      if (obj1.status == "success"){
+        for (i=0; i < 2; i++){
+          // console.log("Maand is: " + dateFormat(obj1.data[i].title));
+          for (j=0; j < obj1.data[i].occurrences.length; j++){
+            var dateStr = dateFormat(obj1.data[i].occurrences[j].from.date, "dd-mm-yyyy");
+            switch (obj1.data[i].occurrences[j].title) {
+              case 'Groente en fruit':
+                if(!fDates.GFT) fDates.GFT = [];
+                fDates.GFT.push(dateStr);
+                break;
+              case 'Papier':
+                if(!fDates.PAPIER) fDates.PAPIER = [];
+                fDates.PAPIER.push(dateStr);
+                break;
+              case 'Restafval':
+                if(!fDates.REST) fDates.REST = [];
+                fDates.REST.push(dateStr);
+              break;
+              case 'PMD':
+                if(!fDates.PLASTIC) fDates.PLASTIC = [];
+                fDates.PLASTIC.push(dateStr);
+              break;
+              default:
+                console.log('defaulted', elem.attribs.class);
+            }
+          }
+        }
+        console.log(fDates);
+        return callback(null, fDates);
+      } else {
+        console.log("Postcode niet gevonden!");
+        return callback(new Error("Postcode niet gevonden!"));
+      }
+    } else {
+      console.log("Probleem met aanroep API!");
+      return callback(new Error("Probleem met aanroep API!"));
+    }
+  });
 }
 
 function dateFormat(date) {
@@ -481,10 +546,13 @@ function parseDate(dateString){
   return fullString;
 }
 
+
+
 apiList.push(afvalapp);
 apiList.push(mijnAfvalWijzer);
 apiList.push(afvalwijzerArnhem);
 apiList.push(twenteMilieu);
 apiList.push(gemeenteHellendoorn);
+apiList.push(recycleManager);
 
 module.exports = apiList;
