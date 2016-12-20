@@ -51,6 +51,7 @@ function parseSpeach(speech, callback) {
 		// WHAT type of trash is collected << TODAY | TOMORROW | DAY AFTER TOMORROW >>
 		// WHEN is <<TYPE>> collected?
 		// IS <<TYPE>> colllected << TODAY | TOMORROW | DAY AFTER TOMORROW >>
+		// WHICH type will be collected << TODAY | TOMORROW | DAY AFTER TOMORROW >>
 		
 		var regexReplace = new RegExp("(" +__('speech.replacequestion')+ ")", 'gi');
 		var newTranscript = speech.transcript.replace(regexReplace, "");
@@ -208,7 +209,7 @@ function parseSpeach(speech, callback) {
 					responseText = __('speech.output.noyiscollectedonxbutonz', { time: speech.time[0].transcript, type: __('speech.output.type.' + foundType), time2: toDateOutputString(differenceInDaysForType) });
 				}
 			}
-			else if(questionType == 1) // what type is collected next?
+			else if(questionType == 1) // what|which type is collected next?
 			{
 				// Find the container that is picked up next
 				var nextContainerNotBefore = new Date();
@@ -271,7 +272,7 @@ function parseSpeach(speech, callback) {
 		console.log(responseText);
 		if(responseText != "")
 		{
-			Homey.manager('speech-output').say(responseText, function callback(err, success) {
+			speech.say(responseText, function callback(err, success) {
 				// Do nothing, fired when Homey is done speaking.
 			});
 			
