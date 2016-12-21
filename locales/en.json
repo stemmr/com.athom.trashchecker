@@ -1,7 +1,7 @@
 {
 	"title": "Trash Checker",
 	"settings": {
-		"description":"Please note that not all cities are supported, take a look at the documentation to see whether your city is supported",
+		"description":"Please note that not all cities are supported, take a look at the documentation to see whether your city is supported. If your city is not supported you have the option to enter the dates manually.",
 		"title": "Please enter your postal code and home number",
 		"postcode": "Postal code",
 		"hnumber": "House number",
@@ -9,6 +9,123 @@
 		"save": "Save changes",
 		"fail": "This address is not supported",
 		"update": "Address updated to ",
-		"checking": "checking address..."
+		"checking": "checking address...",
+		"gft": "Organic",
+		"rest": "Residual",
+		"plastic": "Plastic",
+		"pmd": "PMD",
+		"paper": "Paper",
+		"textile": "Textile",
+		"titlemanualinput": "Manual input",
+		"manualInputField": "Enter dates manually?",
+		"manualInputFieldDescription": "Yes, enter them manually",
+		"saveManualInput": "Save manual input",
+		"interval":
+		{
+			"na": "N/A",
+			"everyweek": "Every week on",
+			"everyotherweek": "Every other week on",
+			"everythreeweeks": "Once every three weeks on",
+			"everyfourweeks": "Once every four weeks on",
+			"everyfirst": "Every first",
+			"everysecond": "Every second",
+			"everythird": "Every third",
+			"everysecondlast": "Every second last",
+			"everylast": "Every last"
+		},
+		"dayofweek": {
+			"mo": "Monday",
+			"tu": "Tuesday",
+			"we": "Wednesday",
+			"th": "Thursday",
+			"fr": "Friday",
+			"sa": "Saturday",
+			"su": "Sunday"
+		},
+		"interval_extra":
+		{
+			"month": "of the month",
+			"quarter": "of the quarter",
+			"year": "of the year"
+		},
+		"startdate": "starting on"
+	},
+	"speech":
+	{
+		"replacequestion": "do you know|can you tell me|can you tell|question",
+		"type":
+		{
+			"GFT": "organic",
+			"REST": "residual",
+			"PLASTIC": "plastic",
+			"PMD": "pmd",
+			"PAPIER": "paper",
+			"TEXTIEL": "textile"
+		},
+		"type_multipleother":
+		{
+			"GFT": "green|biological",
+			"REST": "black|residual|grey|gray",
+			"PLASTIC": "elastic|supple",
+			"PMD": "metal|drink carton",
+			"PAPIER": "cardboard|papery",
+			"TEXTIEL": "cloth|yarn"
+		},
+		"questiontype":
+		{
+			"what": "what",
+			"when": "when",
+			"is": "is",
+			"which": "which"
+		},
+		"output":
+		{
+			"noknowntrashcollected": "As far as I know there is no trash collected in your neighbourhood",
+			"notrashcollectedonx": "There is no trash collected __time__",
+			"trashtypesycollectedonx": "__time__ __types__ are collected",
+			"trashtypeycollectedonx": "__time__ __type__ is collected",
+			"notrashcollectionforx": "__type__ is not collected in your area",
+			"trashtypexcollectedony": "__type__ is collected __time__",
+			"yesyiscollectedonx": "Yes, __type__ is collected __time__",
+			"noyiscollectedonxbutonz": "No, __type__ is not collected __time__ but __time2__",
+			"and": "and",
+			"next": "next",
+			"on": "on",
+			"days": "days",
+			"in": "in",
+			"type":
+			{
+				"GFT": "the organic waste",
+				"REST": "the residual waste",
+				"PLASTIC": "the plastic waste",
+				"PMD": "the plastics, metal and drinking carton",
+				"PAPIER": "the paper",
+				"TEXTIEL": "the textile"
+			},
+			"weekdays":
+			{
+				"d0": "sunday",
+				"d1": "monday",
+				"d2": "tuesday",
+				"d3": "wednesday",
+				"d4": "thursday",
+				"d5": "friday",
+				"d6": "saturday"
+			},
+			"timeindicator":
+			{
+				"t0": "today",
+				"t1": "tomorrow",
+				"t2": "the day after tomorrow"
+			}
+		}
+	},
+	"error":
+	{
+		"typenotsupported":
+		{ 
+			"addviasettings": "No dates known for this type of trash. Add them manually via the settings page of the app.",
+			"onyouraddress": "This type of trash is not supported on your address."
+		}
 	}
 }
