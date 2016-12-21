@@ -1,10 +1,7 @@
 <html>
 <head>
-
-<style>
-
-</style>
 </head>
+  
 <body>
 	<h2 data-i18n="settings.title"></h2>
     <p style="display:block" data-i18n="settings.description"></p>
@@ -319,10 +316,9 @@
         		document.getElementById('postcode').value = postcode;
         	});
 
-        	Homey.get('hnumber', function(err, housenumber){
-        		if(err) return console.error(err);
-        		document.getElementById('number').value = housenumber;
-        	});
+        var pc = document.getElementById('postcode').value;
+        var num = document.getElementById('number').value;
+
 
         	Homey.get('country',function(err, country){
         		console.log(country);
@@ -390,8 +386,13 @@
 				});
 			});
 
-            Homey.ready()
+
+        if (document.getElementById('NL').checked) {
+            country = 'NL';
+        } else if (document.getElementById('BE').checked) {
+            country = 'BE';
         }
+
 
 		// Save zipcode and housenumber to Homey Settings
         function save() {
@@ -544,4 +545,5 @@
 		}
 	</script>
 <body>
+
 </html>
