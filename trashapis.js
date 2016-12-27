@@ -492,7 +492,7 @@ function recycleManager(postcode, housenumber, country, callback){
                 fDates.PLASTIC.push(dateStr);
               break;
               default:
-                console.log('Niets gevonden!', obj1.data[i].occurrences[j].title));
+                console.log('Niets gevonden!', obj1.data[i].occurrences[j].title);
             }
           }
         }
