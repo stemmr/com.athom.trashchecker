@@ -356,9 +356,9 @@ function onUpdateData()
 			Homey.manager('settings').get('country'),
 			function(success){
 				if(success){
-					Homey.log('retrieved house information');
+					Homey.log('Success! Retrieved house information');
 				}else{
-					Homey.log('house information has not been set');
+					Homey.log('Error: house information has not been set');
 				}
 			}
 		);
@@ -429,7 +429,7 @@ function updateAPI(postcode, homenumber, country, callback) {
 	asyncLoop(apiArray.length, function(loop) {
 		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=> {
 			if(err) {
-				console.log('error while looping');
+				console.log('Error while looping');
 				loop.next();
 			} else if(Object.keys(result).length > 0) {
 				gdates = result;
