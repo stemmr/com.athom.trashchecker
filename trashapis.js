@@ -471,8 +471,10 @@ function recycleManager(postcode, housenumber, country, callback){
           // console.log("Maand is: " + dateFormat(obj1.data[i].title));
           for (j=0; j < obj1.data[i].occurrences.length; j++){
             var dateStr = dateFormat(obj1.data[i].occurrences[j].from.date, "dd-mm-yyyy");
+            console.log("Soort afval is: " + obj1.data[i].occurrences[j].title);
             switch (obj1.data[i].occurrences[j].title) {
               case 'Groente en fruit':
+	            case 'GFT':
                 if(!fDates.GFT) fDates.GFT = [];
                 fDates.GFT.push(dateStr);
                 break;
@@ -485,11 +487,12 @@ function recycleManager(postcode, housenumber, country, callback){
                 fDates.REST.push(dateStr);
               break;
               case 'PMD':
+	            case 'Plastic verpakkingen':
                 if(!fDates.PLASTIC) fDates.PLASTIC = [];
                 fDates.PLASTIC.push(dateStr);
               break;
               default:
-                console.log('defaulted', elem.attribs.class);
+                console.log('Niets gevonden!', obj1.data[i].occurrences[j].title);
             }
           }
         }

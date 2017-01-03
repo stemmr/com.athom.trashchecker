@@ -95,11 +95,11 @@
 			"in": "over",
 			"type":
 			{
-				"GFT": "de groente, fruit en tuinafval container",
-				"REST": "de restafval container",
-				"PLASTIC": "het plastic",
+				"GFT": "de groene container",
+				"REST": "de grijze container",
+				"PLASTIC": "de oranje container",
 				"PMD": "de plastic, metalen en drankcartons",
-				"PAPIER": "het papier",
+				"PAPIER": "de blauwe container",
 				"TEXTIEL": "het textiel"
 			},
 			"weekdays":
