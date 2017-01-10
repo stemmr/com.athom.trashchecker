@@ -6,6 +6,7 @@ Unfortunately not all cities work with the Trashcan Reminder, if you can find yo
 
 - [mijnAfvalWijzer](http://www.mijnafvalwijzer.nl)
 - [deAfvalApp](http://www.deafvalapp.nl/calendar/kalender_start.jsp)
+- [Cyclus](http://afvalkalender.cyclusnv.nl/)
 - [afvalwijzerArnhem](https://www.afvalwijzer-arnhem.nl)
 - [Gemeente Hellendoorn](http://hellendoornafvalkalender.2go-mobile.com)
 - [Twentemilieu](https://www.twentemilieu.nl)
