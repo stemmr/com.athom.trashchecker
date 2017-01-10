@@ -80,14 +80,14 @@
 		},
 		"output":
 		{
-			"noknowntrashcollected": "As far as I know there is no trash collected in your neighbourhood",
-			"notrashcollectedonx": "There is no trash collected __time__",
-			"trashtypesycollectedonx": "__time__ __types__ are collected",
-			"trashtypeycollectedonx": "__time__ __type__ is collected",
-			"notrashcollectionforx": "__type__ is not collected in your area",
-			"trashtypexcollectedony": "__type__ is collected __time__",
-			"yesyiscollectedonx": "Yes, __type__ is collected __time__",
-			"noyiscollectedonxbutonz": "No, __type__ is not collected __time__ but __time2__",
+			"noknowntrashcollected": "As far as I know there is no trash collected in your neighbourhood.",
+			"notrashcollectedonx": "There is no trash collected __time__.",
+			"trashtypesycollectedonx": "__time__ __types__ are collected.",
+			"trashtypeycollectedonx": "__time__ __type__ is collected.",
+			"notrashcollectionforx": "__type__ is not collected in your area.",
+			"trashtypexcollectedony": "__type__ is collected __time__.",
+			"yesyiscollectedonx": "Yes, __type__ is collected __time__.",
+			"noyiscollectedonxbutonz": "No, __type__ is not collected __time__ but __time2__.",
 			"and": "and",
 			"next": "next",
 			"on": "on",
@@ -95,28 +95,28 @@
 			"in": "in",
 			"type":
 			{
-				"GFT": "the organic waste",
-				"REST": "the residual waste",
-				"PLASTIC": "the plastic waste",
-				"PMD": "the plastics, metal and drinking carton",
-				"PAPIER": "the paper",
-				"TEXTIEL": "the textile"
+				"GFT": "The organic waste",
+				"REST": "The residual waste",
+				"PLASTIC": "The plastic waste",
+				"PMD": "The plastics, metal and drinking carton",
+				"PAPIER": "The paper",
+				"TEXTIEL": "The textile"
 			},
 			"weekdays":
 			{
-				"d0": "sunday",
-				"d1": "monday",
-				"d2": "tuesday",
-				"d3": "wednesday",
-				"d4": "thursday",
-				"d5": "friday",
-				"d6": "saturday"
+				"d0": "Sunday",
+				"d1": "Monday",
+				"d2": "Tuesday",
+				"d3": "Wednesday",
+				"d4": "Thursday",
+				"d5": "Friday",
+				"d6": "Saturday"
 			},
 			"timeindicator":
 			{
-				"t0": "today",
-				"t1": "tomorrow",
-				"t2": "the day after tomorrow"
+				"t0": "Today",
+				"t1": "Tomorrow",
+				"t2": "The day after tomorrow"
 			}
 		}
 	},

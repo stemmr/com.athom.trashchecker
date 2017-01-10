@@ -80,14 +80,14 @@
 		},
 		"output":
 		{
-			"noknowntrashcollected": "Voor zover ik weet wordt er bij jou in de buurt geen afval opgehaald",
-			"notrashcollectedonx": "Er wordt geen afval opgehaald __time__",
-			"trashtypesycollectedonx": "__time__ worden __types__ opgehaald",
-			"trashtypeycollectedonx": "__time__ wordt __type__ opgehaald",
-			"notrashcollectionforx": "__type__ wordt niet opgehaald in jouw gebied",
-			"trashtypexcollectedony": "__type__ wordt __time__ opgehaald",
-			"yesyiscollectedonx": "Ja, __type__ wordt __time__ opgehaald",
-			"noyiscollectedonxbutonz": "Nee, __type__ wordt niet __time__ opgehaald maar __time2__",
+			"noknowntrashcollected": "Voor zover ik weet wordt er bij jou in de buurt geen afval opgehaald.",
+			"notrashcollectedonx": "Er wordt geen afval opgehaald __time__.",
+			"trashtypesycollectedonx": "__time__ worden __types__ opgehaald.",
+			"trashtypeycollectedonx": "__time__ wordt __type__ opgehaald.",
+			"notrashcollectionforx": "__type__ wordt niet opgehaald in jouw gebied.",
+			"trashtypexcollectedony": "__type__ wordt __time__ opgehaald.",
+			"yesyiscollectedonx": "Ja, __type__ wordt __time__ opgehaald.",
+			"noyiscollectedonxbutonz": "Nee, __type__ wordt niet __time__ opgehaald maar __time2__.",
 			"and": "en",
 			"next": "aanstaande",
 			"on": "op",
@@ -95,28 +95,28 @@
 			"in": "over",
 			"type":
 			{
-				"GFT": "de groene container",
-				"REST": "de grijze container",
-				"PLASTIC": "de oranje container",
-				"PMD": "de plastic, metalen en drankcartons",
-				"PAPIER": "de blauwe container",
-				"TEXTIEL": "het textiel"
+				"GFT": "De groene container",
+				"REST": "De grijze container",
+				"PLASTIC": "De oranje container",
+				"PMD": "De plastic, metalen en drankcartons",
+				"PAPIER": "De blauwe container",
+				"TEXTIEL": "Het textiel"
 			},
 			"weekdays":
 			{
-				"d0": "zondag",
-				"d1": "maandag",
-				"d2": "dinsdag",
-				"d3": "woensdag",
-				"d4": "donderdag",
-				"d5": "vrijdag",
-				"d6": "zaterdag"
+				"d0": "Zondag",
+				"d1": "Maandag",
+				"d2": "Dinsdag",
+				"d3": "Woensdag",
+				"d4": "Donderdag",
+				"d5": "Vrijdag",
+				"d6": "Zaterdag"
 			},
 			"timeindicator":
 			{
-				"t0": "vandaag",
-				"t1": "morgen",
-				"t2": "overmorgen"
+				"t0": "Vandaag",
+				"t1": "Morgen",
+				"t2": "Overmorgen"
 			}
 		}
 	},

@@ -174,7 +174,7 @@ function parseSpeach(speech, callback) {
 						multiTypeString += typeCollectedOnThisDay[i] + (i < (len-2) ? ", " : (i == (len-2) ? " " + __('speech.output.and') + " " : ""));
 					}
 					
-					responseText = __('speech.output.trashtypesycollectedonx', { time: speech.time[0].transcript, types: multiTypeString });
+					responseText = __('speech.output.trashtypesycollectedonx', { time: speech.time[0].transcript, types: multiTypeString.toLowerCase() });
 				}
 				else
 				{
@@ -190,7 +190,7 @@ function parseSpeach(speech, callback) {
 				}
 				else
 				{
-					responseText = __('speech.output.trashtypexcollectedony', { type: __('speech.output.type.' + foundType), time: toDateOutputString(differenceInDaysForType) });
+					responseText = __('speech.output.trashtypexcollectedony', { type: __('speech.output.type.' + foundType), time: toDateOutputString(differenceInDaysForType).toLowerCase() });
 				}
 			}
 			// is <<type>> collected on <<date>>
@@ -202,11 +202,11 @@ function parseSpeach(speech, callback) {
 				}
 				else if(matchesWithGivenType)
 				{
-					responseText = __('speech.output.yesyiscollectedonx', { time: speech.time[0].transcript, type: __('speech.output.type.' + foundType) });
+					responseText = __('speech.output.yesyiscollectedonx', { time: speech.time[0].transcript.toLowerCase(), type: __('speech.output.type.' + foundType).toLowerCase() });
 				}
 				else 
 				{
-					responseText = __('speech.output.noyiscollectedonxbutonz', { time: speech.time[0].transcript, type: __('speech.output.type.' + foundType), time2: toDateOutputString(differenceInDaysForType) });
+					responseText = __('speech.output.noyiscollectedonxbutonz', { time: speech.time[0].transcript.toLowerCase(), type: __('speech.output.type.' + foundType).toLowerCase(), time2: toDateOutputString(differenceInDaysForType).toLowerCase() });
 				}
 			}
 			else if(questionType == 1) // what|which type is collected next?
@@ -256,11 +256,11 @@ function parseSpeach(speech, callback) {
 						multiTypeString += containerTypesNext[i] + (i < (len-2) ? ", " : (i == (len-2) ? " " + __('speech.output.and') + " " : ""));
 					}
 					
-					responseText = __('speech.output.trashtypesycollectedonx', { time: toDateOutputString(differenceInDaysForNextCollection), types: multiTypeString });
+					responseText = __('speech.output.trashtypesycollectedonx', { time: toDateOutputString(differenceInDaysForNextCollection), types: multiTypeString.toLowerCase() });
 				}
 				else
 				{
-					responseText = __('speech.output.trashtypeycollectedonx', { time: toDateOutputString(differenceInDaysForNextCollection), type: containerTypesNext[0] });
+					responseText = __('speech.output.trashtypeycollectedonx', { time: toDateOutputString(differenceInDaysForNextCollection), type: containerTypesNext[0].toLowerCase() });
 				}				
 			}
 		}
