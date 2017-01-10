@@ -1,7 +1,7 @@
 <html>
 <head>
 </head>
-  
+
 <body>
 	<h2 data-i18n="settings.title"></h2>
     <p style="display:block" data-i18n="settings.description"></p>
@@ -25,7 +25,7 @@
         <div class="field row" id="manual_input_field">
 			<label style="float:left" for="manual_input_set" data-i18n="settings.manualInputField"></label>
 			<div style="float:left">
-				<input style="width: 10px" id="manual_input_set" name="manualInput" type="checkbox"></input><label for="manual_input_set" class="name" data-i18n="settings.manualInputFieldDescription"></label><br>
+				<input style="width: 10px" id="manual_input_set" name="manualInput" type="checkbox"></input><label style="width: 200px;" for="manual_input_set" class="name" data-i18n="settings.manualInputFieldDescription"></label><br>
 			</div>
         </div>
         <span id="resp"></span>
@@ -34,7 +34,7 @@
 	<br /><br />
 	<fieldset id="manual_input">
 		<legend data-i18n="settings.titlemanualinput"></legend>
-        
+
 		<!-- GFT -->
 		<div class="field row">
 			<label style="float:left" for="gft" data-i18n="settings.gft"></label>
@@ -73,9 +73,9 @@
 			<div style="float: left;" id="gft_startdate_div">
 				<p style="display: inline; margin-left: 5px;" for="startdate" data-i18n="settings.startdate"></p>
 				<input style="display: inline; margin-left: 5px;" type="date" name="gft[startdate]" id="gft_startdate"></input>
-			</div>		
+			</div>
         </div>
-		
+
 		<!-- REST -->
 		<div class="field row">
 			<label style="float:left" for="rest" data-i18n="settings.rest"></label>
@@ -114,9 +114,9 @@
 			<div style="float: left;" id="rest_startdate_div">
 				<p style="display: inline; margin-left: 5px;" for="startdate" data-i18n="settings.startdate"></p>
 				<input style="display: inline; margin-left: 5px;" type="date" name="rest[startdate]" id="rest_startdate"></input>
-			</div>		
+			</div>
         </div>
-		
+
 		<!-- PAPER -->
 		<div class="field row">
 			<label style="float:left" for="paper" data-i18n="settings.paper"></label>
@@ -155,9 +155,9 @@
 			<div style="float: left;" id="paper_startdate_div">
 				<p style="display: inline; margin-left: 5px;" for="startdate" data-i18n="settings.startdate"></p>
 				<input style="display: inline; margin-left: 5px;" type="date" name="paper[startdate]" id="paper_startdate"></input>
-			</div>		
+			</div>
         </div>
-		
+
 		<!-- PLASTIC -->
 		<div class="field row">
 			<label style="float:left" for="plastic" data-i18n="settings.plastic"></label>
@@ -196,9 +196,9 @@
 			<div style="float: left;" id="plastic_startdate_div">
 				<p style="display: inline; margin-left: 5px;" for="startdate" data-i18n="settings.startdate"></p>
 				<input style="display: inline; margin-left: 5px;" type="date" name="plastic[startdate]" id="plastic_startdate"></input>
-			</div>		
+			</div>
         </div>
-		
+
 		<!-- PMD -->
 		<div class="field row">
 			<label style="float:left" for="pmd" data-i18n="settings.pmd"></label>
@@ -237,9 +237,9 @@
 			<div style="float: left;" id="pmd_startdate_div">
 				<p style="display: inline; margin-left: 5px;" for="startdate" data-i18n="settings.startdate"></p>
 				<input style="display: inline; margin-left: 5px;" type="date" name="pmd[startdate]" id="pmd_startdate"></input>
-			</div>		
+			</div>
         </div>
-		
+
 		<!-- TEXTILE -->
 		<div class="field row">
 			<label style="float:left" for="textile" data-i18n="settings.textile"></label>
@@ -278,7 +278,7 @@
 			<div style="float: left;" id="textile_startdate_div">
 				<p style="display: inline; margin-left: 5px;" for="startdate" data-i18n="settings.startdate"></p>
 				<input style="display: inline; margin-left: 5px;" type="date" name="textile[startdate]" id="textile_startdate"></input>
-			</div>		
+			</div>
         </div>
     </fieldset>
 	<button id="manualInput" class="left" style="display:block" onclick="saveManualInput()" data-i18n="settings.saveManualInput" ></button>
@@ -296,7 +296,7 @@
 			document.getElementById("plastic_option").addEventListener("change", function(elem) { ToggleManualInputFields("plastic"); });
 			document.getElementById("pmd_option").addEventListener("change", function(elem) { ToggleManualInputFields("pmd"); });
 			document.getElementById("textile_option").addEventListener("change", function(elem) { ToggleManualInputFields("textile"); });
-			
+
 			// Set properties
 			OnManualInputCheckboxChanged();
 			ToggleManualInputFields("gft");
@@ -305,8 +305,8 @@
 			ToggleManualInputFields("plastic");
 			ToggleManualInputFields("pmd");
 			ToggleManualInputFields("textile");
-			
-			// Retrieve values from Homey settings			
+
+			// Retrieve values from Homey settings
         	Homey.get('postcode', function(err, postcode){
         		if(err)
         		{
@@ -316,8 +316,14 @@
         		document.getElementById('postcode').value = postcode;
         	});
 
-        var pc = document.getElementById('postcode').value;
-        var num = document.getElementById('number').value;
+		Homey.get('hnumber', function (err, houseNumber) {
+			console.log('NUMBER', err, houseNumber);
+			if (err) {
+				console.log("not working");
+				return console.error(err);
+			}
+			document.getElementById('number').value = houseNumber;
+		});
 
 
         	Homey.get('country',function(err, country){
@@ -325,60 +331,60 @@
         		if(err){
         			return console.error(err);
         		}
-				
+
         		if(country == 'NL' || country == 'BE'){
         			document.getElementById(country).checked = true;
         		}else{
         			document.getElementById('NL').checked = true;
         		}
         	});
-			
+
         	Homey.get('manualInput',function(err, manualInput) {
 				console.log(manualInput);
         		if(err) {
         			return console.error(err);
         		}
-			
+
 				if(manualInput !== true)
 				{
 					console.log("manual input deactivated");
 					return;
 				}
-				
+
 				document.getElementById('manual_input_set').checked = true;
 				OnManualInputCheckboxChanged();
-			
+
         		Homey.get('manualEntryData',function(err, manualEntryData) {
 					console.log(manualEntryData);
 					if(err) {
 						return console.error(err);
 					}
-					
+
 					if(typeof manualEntryData.gft !== 'undefined')
 					{
 						SetManualEntryFormValues(manualEntryData.gft, "gft");
 					}
-					
+
 					if(typeof manualEntryData.paper !== 'undefined')
 					{
 						SetManualEntryFormValues(manualEntryData.paper, "paper");
 					}
-					
+
 					if(typeof manualEntryData.rest !== 'undefined')
 					{
 						SetManualEntryFormValues(manualEntryData.rest, "rest");
 					}
-					
+
 					if(typeof manualEntryData.plastic !== 'undefined')
 					{
 						SetManualEntryFormValues(manualEntryData.plastic, "plastic");
 					}
-					
+
 					if(typeof manualEntryData.pmd !== 'undefined')
 					{
 						SetManualEntryFormValues(manualEntryData.pmd, "pmd");
 					}
-					
+
 					if(typeof manualEntryData.textile !== 'undefined')
 					{
 						SetManualEntryFormValues(manualEntryData.textile, "textile");
@@ -386,13 +392,8 @@
 				});
 			});
 
-
-        if (document.getElementById('NL').checked) {
-            country = 'NL';
-        } else if (document.getElementById('BE').checked) {
-            country = 'BE';
-        }
-
+		Homey.ready();
+	}
 
 		// Save zipcode and housenumber to Homey Settings
         function save() {
@@ -408,7 +409,7 @@
             }else if(document.getElementById('BE').checked) {
             	country = 'BE';
             }
-			
+
 			var manualInput = false;
 			if(document.getElementById('manual_input_set').checked) {
             	manualInput = true;
@@ -436,9 +437,9 @@
 					resp.innerHTML = __('settings.fail');
 					resp.style.color = 'red';
 	        	}
-				
+
 				Homey.set('manualInput', manualInput);
-				
+
         		//Do stuff if true/false (kruis,vinkje)
         		console.log(result);
         	});
@@ -448,7 +449,7 @@
 		function saveManualInput()
 		{
 			Homey.set('manualInput', true);
-			
+
 			var data = {};
 			data = SetManualInputDataFor("gft", data);
 			data = SetManualInputDataFor("rest", data);
@@ -456,26 +457,26 @@
 			data = SetManualInputDataFor("plastic", data);
 			data = SetManualInputDataFor("paper", data);
 			data = SetManualInputDataFor("textile", data);
-			
+
 			console.log(data);
 			Homey.set('manualEntryData', data);
 		}
-		
+
 		// Sets values given in "values" to the given "type" on the form.
 		function SetManualEntryFormValues(values, type)
 		{
 			document.getElementById(type + "_option").value = values.option;
 			document.getElementById(type + "_dayofweek").value = values.day;
 			document.getElementById(type + "_option_extension").value = values.option_extension;
-			
+
 			if(typeof values.startdate !== 'undefined' && values.startdate !== null)
 			{
 				document.getElementById(type + "_startdate").value = values.startdate.substring(0, 10);
 			}
-			
+
 			ToggleManualInputFields(type);
 		}
-		
+
 		// Retrieves all manual values from the form based on given "type" and adds them to the "data" element.
 		function SetManualInputDataFor(type, data)
 		{
@@ -484,25 +485,25 @@
 			{
 				return data;
 			}
-			
+
 			data[type] = {};
 			data[type].option = document.getElementById(type + "_option").value;
 			data[type].startdate = document.getElementById(type + "_startdate").value;
 			data[type].day = document.getElementById(type + "_dayofweek").value;
-			
+
 			if(data[type].option >= 4) {
 				data[type].option_extension = document.getElementById(type + "_option_extension").value;
 			}
 			else {
 				data[type].option_extension = -1;
-			}		
-		
+			}
+
 			return data;
 		}
-		
+
 		// Toggles manual input fieldset based on "Manual Input" checkbox
 		function OnManualInputCheckboxChanged()
-		{	
+		{
 			if(document.getElementById('manual_input_set').checked)
 			{
 				document.getElementById("manual_input").style.display = 'block';
@@ -514,12 +515,12 @@
 				document.getElementById("manualInput").style.display = 'none';
 			}
 		}
-		
+
 		// Toggles fields on the form based on the given element
 		function ToggleManualInputFields(prefix)
 		{
 			var value = document.getElementById(prefix + "_option").value;
-		
+
 			if(value >= 5) {
 				document.getElementById(prefix + "_option_extension").style.display = 'block';
 				document.getElementById(prefix + "_startdate_div").style.display = 'none';
@@ -544,6 +545,6 @@
 			}
 		}
 	</script>
-<body>
+</body>
 
 </html>
