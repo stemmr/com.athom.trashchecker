@@ -7,6 +7,7 @@ var dateFormat = require('dateformat');
 var request = require('request');
 var cheerio = require('cheerio');
 var ical = require('ical');
+var DOMParser = require('xmldom').DOMParser;
 
 function afvalapp(postcode, homenumber, country, callback) {
     var options = {
@@ -142,7 +143,7 @@ function afvalwijzerArnhem(postcode, housenumber, country, callback) {
         } else {
             return callback(new Error('Invalid location'));
         }
-    })
+    });
 }
 
 
@@ -174,11 +175,11 @@ function afvalwijzerArnhem(postcode, housenumber, country, callback){
           case 'restafval':
             if(!fDates.REST) fDates.REST = [];
             fDates.REST.push(dateStr);
-          break;
+            break;
           case 'kunststof':
             if(!fDates.PLASTIC) fDates.PLASTIC = [];
             fDates.PLASTIC.push(dateStr);
-          break;
+            break;
           default:
             console.log('defaulted', elem.attribs.class);
         }
@@ -186,7 +187,7 @@ function afvalwijzerArnhem(postcode, housenumber, country, callback){
         //  console.log(elem);
         //  console.log(elem.attribs.class);
         // console.log(`${elem.attribs.class}:\t\t${elem.children[2].data.trim()}`);
-       })
+      });
       console.log(fDates);
       return callback(null, fDates);
     } else {
@@ -234,6 +235,7 @@ function afvalwijzerArnhem(postcode, housenumber, country, callback){
             return callback(new Error('Unable to login'));
         }
     });
+  });
 }
 
 function twenteMilieu(postcode, housenumber, country, callback){
@@ -272,8 +274,8 @@ function twenteMilieu(postcode, housenumber, country, callback){
       res1.on( "end", function( chunk1 ) {
         // console.log("Output fetchAddress is: " + buffer1);
         var obj1 = JSON.parse(buffer1);
-        if(obj1.status == true){
-          var uniqueID = obj1.dataList[0]["UniqueId"];
+        if(obj1.status){
+          var uniqueID = obj1.dataList[0].UniqueId;
           // console.log("UniqueID: " + uniqueID);
           var post_data2 = `companyCode=8d97bb56-5afd-4cbc-a651-b4f7314264b4&uniqueAddressID=${uniqueID}&startDate=${startDate}&endDate=${endDate}`;
           var post_options2 = {
@@ -290,8 +292,8 @@ function twenteMilieu(postcode, housenumber, country, callback){
             res2.on( "data", function( chunk2 ) { buffer2 = buffer2 + chunk2; } );
             res2.on( "end", function( chunk2 ) {
               var obj2 = JSON.parse(buffer2);
-              if (obj2.status == true){
-                for (i=0; i < Object.keys(obj2.dataList).length; i++){
+              if (obj2.status){
+                for (var i=0; i < Object.keys(obj2.dataList).length; i++){
                   // console.log("Type afval is: " + obj2.dataList[i]._pickupTypeText);
                   switch(obj2.dataList[i]._pickupTypeText)
                   {
@@ -314,7 +316,7 @@ function twenteMilieu(postcode, housenumber, country, callback){
                    }
                   // console.log("Datum is: " + obj2.dataList[i].pickupDates[0]);
                   //console.log("Aantal datums: " + Object.keys(obj2.dataList[i].pickupDates).length);
-                  for (j=0; j < Object.keys(obj2.dataList[i].pickupDates).length; j++){
+                  for (var j=0; j < Object.keys(obj2.dataList[i].pickupDates).length; j++){
                       var date = dateFormat(obj2.dataList[i].pickupDates[j], "dd-mm-yyyy");
                       switch(obj2.dataList[i]._pickupTypeText)
                       {
@@ -335,8 +337,8 @@ function twenteMilieu(postcode, housenumber, country, callback){
                          fDates.PLASTIC.push(date);
                          break;
                        }
-                   };
-                };
+                   }
+                }
                 console.log(fDates);
                 return callback(null, fDates);
               }else{
@@ -369,7 +371,7 @@ function gemeenteHellendoorn(postcode, housenumber, country, callback){
     console.log('unsupported country');
     callback(new Error('unsupported country'));
   }
-  var DOMParser = new (require('xmldom')).DOMParser;
+  var DOMParser = new DOMParser();
 
   var startDate = new Date();
   startDate = dateFormat(startDate.setDate(startDate.getDate() - 14), "yyyy-mm-dd");
@@ -448,7 +450,7 @@ function gemeenteHellendoorn(postcode, housenumber, country, callback){
                     var numberOfCodes = trashCodeObject.length;
                          // console.log("Code is: ", doc.getElementsByTagName("Code")[0].childNodes[0].data);
                     // console.log("Aantal gevonden Code velden: ", numberOfCodes);
-                    for (i=0; i < numberOfCodes; i++){
+                    for (var i=0; i < numberOfCodes; i++){
                       switch(trashCodeObject[i].childNodes[0].data)
                       {
                         case "00":
@@ -471,7 +473,7 @@ function gemeenteHellendoorn(postcode, housenumber, country, callback){
 
                       var numberOfDates = trashCodeObject[i].parentNode.lastChild.childNodes.length;
                       // console.log("Aantal gevonden Datums: ", numberOfDates);
-                      for (j=0; j < numberOfDates; j++){
+                      for (var j=0; j < numberOfDates; j++){
                         var date = trashCodeObject[i].parentNode.lastChild.childNodes[j].childNodes[0].nodeValue;
                         // console.log(dateFormat(date, "dd-mm-yyyy"));
                         switch(trashCodeObject[i].childNodes[0].data)
@@ -541,9 +543,9 @@ function recycleManager(postcode, housenumber, country, callback){
       // console.log(res);
       var obj1 = JSON.parse(res.body);
       if (obj1.status == "success"){
-        for (i=0; i < 2; i++){
+        for (var i=0; i < 2; i++){
           // console.log("Maand is: " + dateFormat(obj1.data[i].title));
-          for (j=0; j < obj1.data[i].occurrences.length; j++){
+          for (var j=0; j < obj1.data[i].occurrences.length; j++){
             var dateStr = dateFormat(obj1.data[i].occurrences[j].from.date, "dd-mm-yyyy");
             switch (obj1.data[i].occurrences[j].title) {
               case 'Groente en fruit':
@@ -563,7 +565,7 @@ function recycleManager(postcode, housenumber, country, callback){
                 fDates.PLASTIC.push(dateStr);
               break;
               default:
-                console.log('defaulted', elem.attribs.class);
+                console.log('defaulted', obj1.data[i].occurrences[j]);
             }
           }
         }

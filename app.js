@@ -17,14 +17,7 @@ function init() {
 	if(Homey.manager('settings').get('manualInput'))
 	{
 		var manually = Homey.manager('settings').get('manualInput');
-		if(manually === true)
-		{
-			manualInput = true;
-		}
-		else
-		{
-			manualInput = false;
-		}
+		manualInput = Boolean(manually);
 	}
 
 	// Manually kick off data retrieval
@@ -429,7 +422,7 @@ function updateAPI(postcode, homenumber, country, callback) {
 	asyncLoop(apiArray.length, function(loop) {
 		apiArray[loop.iteration()](postcode,homenumber,country,(err,result)=> {
 			if(err) {
-				console.log('error while looping');
+				console.log('error while looping', err);
 				loop.next();
 			} else if(Object.keys(result).length > 0) {
 				gdates = result;
@@ -492,22 +485,22 @@ function CalculatePickupDates(settings)
 	var interval = -1;
 	try { 
 		interval = parseInt(settings.option);
-	} catch(e) { console.log(e); };
+	} catch(e) { console.log(e); }
 	
 	var intervalExtended = -1;
 	try { 
 		intervalExtended = parseInt(settings.option_extension);
-	} catch(e) { console.log(e); };
+	} catch(e) { console.log(e); }
 	
 	var startDate = new Date(Date.now());
 	try { 
 		startDate = settings.startdate;
-	} catch(e) { console.log(e); };
+	} catch(e) { console.log(e); }
 	
 	var dayOfWeek = null;
 	try { 
 		dayOfWeek = parseInt(settings.day);
-	} catch(e) { console.log(e); };
+	} catch(e) { console.log(e); }
 	
 	var currentDate = new Date(Date.now());
 	var startDate = new Date(startDate);
@@ -649,7 +642,6 @@ function nthDayInMonth(n, day, m, y) {
 
 function everyNthWeek(n, d, givenDate, currentDate, delta)
 {
-	var correctWithDays = d - currentDate.getDay();
 	givenDate = new Date(givenDate.getFullYear(), givenDate.getMonth(), (givenDate.getDate() + (d - givenDate.getDay())));
 	currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), (currentDate.getDate() + (d - currentDate.getDay())));
 	
@@ -669,7 +661,7 @@ function toDateOutputString(differenceInDaysForType)
 	}
 	else if(differenceInDaysForType <= 7)
 	{
-		var today = new Date()
+		var today = new Date();
 		var dayOfWeek = (today.getDay() + differenceInDaysForType) % 7;
 		return __('speech.output.next') + " " +__('speech.output.weekdays.d'+dayOfWeek);
 	}
