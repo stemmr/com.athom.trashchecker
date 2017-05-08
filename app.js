@@ -291,7 +291,7 @@ function flowDaysToCollect(callback, args)
 	// For testing use these variables, will become pulled from settings
 	//Homey.log(Object.keys(gdates));
 
-	if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' )
+	if( typeof gdates[ args.trash_type.toUpperCase() ] === 'undefined' && args.trash_type.toUpperCase() !== "ANY")
 	{
 		if(manualInput)
 		{
@@ -327,7 +327,7 @@ function flowDaysToCollect(callback, args)
 			}
 		}		
 		
-		return result;
+		return callback(null, result);
 	}	
 
 	var dateString = dateToString(now);
