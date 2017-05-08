@@ -4,7 +4,7 @@
       "en":"Trashcan Reminder",
       "nl":"Afval Herinnering"
    },
-   "version":"0.2.3",
+   "version":"0.2.5",
    "compatibility":"0.x || 1.x",
    "author":{
       "name":"Arthur Stemmer",
@@ -104,6 +104,13 @@
                   "name":"trash_type",
                   "type":"dropdown",
                   "values":[
+	                  {
+                        "id":"ANY",
+                        "label":{
+                           "en":"Any",
+                           "nl":"Iets"
+                        }
+                     },
                      {
                         "id":"REST",
                         "label":{

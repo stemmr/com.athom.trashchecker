@@ -1,4 +1,4 @@
-var ical = require('./node-ical')
+var ical = require('ical')
   , months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 

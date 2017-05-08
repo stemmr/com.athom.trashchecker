@@ -315,6 +315,20 @@ function flowDaysToCollect(callback, args)
 	} else if(args.when == 'datomorrow') {
 		now.setDate(now.getDate() + 2);
 	}
+	
+	var dateString = dateToString(now);
+	if(args.trash_type.toUpperCase() == "ANY") {
+		var result = false;
+		
+		for(var i=0; i<supportedTypes.length; i++)
+		{
+			if(result === false) {
+				result = gdates[ supportedTypes[i].toUpperCase() ].indexOf(dateString) > -1
+			}
+		}		
+		
+		return result;
+	}	
 
 	var dateString = dateToString(now);
 	//Homey.log(dateString);
