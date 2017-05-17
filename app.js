@@ -322,15 +322,14 @@ function flowDaysToCollect(callback, args)
 		
 		for(var i=0; i<supportedTypes.length; i++)
 		{
-			if(result === false) {
-				result = gdates[ supportedTypes[i].toUpperCase() ].indexOf(dateString) > -1
+			if(!result) {
+				result = gdates[ supportedTypes[i].toUpperCase() ].indexOf(dateString) > -1;
 			}
-		}		
+		}
 		
 		return callback(null, result);
 	}	
 
-	var dateString = dateToString(now);
 	//Homey.log(dateString);
 	return callback( null, gdates[ args.trash_type.toUpperCase() ].indexOf(dateString) > -1 );
 }
