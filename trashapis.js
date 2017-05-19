@@ -622,14 +622,11 @@ function parseDate(dateString) {
     return fullString;
 }
 
-
-
 apiList.push(afvalapp);
 apiList.push(mijnAfvalWijzer);
 apiList.push(afvalwijzerArnhem);
 apiList.push(twenteMilieu);
 apiList.push(gemeenteHellendoorn);
 apiList.push(recycleManager);
-
 
 module.exports = apiList;
