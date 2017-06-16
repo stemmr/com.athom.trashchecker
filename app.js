@@ -321,11 +321,11 @@ function flowDaysToCollect(callback, args)
 		var result = false;
 		
 		for(var i=0; i<supportedTypes.length; i++)
-		{
-			if(!result) {
+		{		
+			if(result === false && typeof(gdates[supportedTypes[i].toUpperCase()]) !== 'undefined') {
 				result = gdates[ supportedTypes[i].toUpperCase() ].indexOf(dateString) > -1;
 			}
-		}
+		}		
 		
 		return callback(null, result);
 	}	
