@@ -30,8 +30,16 @@ function afvalapp(postcode, homenumber, country, callback) {
             respArray.pop();
             for (var i in respArray) {
                 if (isNaN(parseInt(respArray[i]))) {
-                    dates[respArray[i]] = [];
                     curr = respArray[i];
+                    switch (curr) {
+                        case "ZAK_BLAUW":
+                            curr = "REST";
+                            break;
+                        case "PBP":
+                            curr = "PLASTIC";
+                            break;
+                    }
+                    dates[curr] = [];
                 }
                 else {
                     dates[curr].push(respArray[i]);
