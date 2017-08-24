@@ -47,7 +47,7 @@ function afvalapp(postcode, homenumber, country, callback) {
             }
 
             if (Object.keys(dates).length === 0 && dates.constructor === Object) {
-                Homey.log('Invalid input');
+                console.log('Invalid input');
                 return callback(null, {});
             } else {//validate the response
                 return callback(null, dates);
@@ -56,7 +56,7 @@ function afvalapp(postcode, homenumber, country, callback) {
     });
 
     req.on('error', function (err) {
-        Homey.log(err.message);
+        console.log(err.message);
     });
 }
 
