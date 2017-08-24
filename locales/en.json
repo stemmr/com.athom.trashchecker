@@ -69,7 +69,7 @@
 			"PLASTIC": "elastic|supple",
 			"PMD": "metal|drink carton",
 			"PAPIER": "cardboard|papery",
-			"TEXTIEL": "cloth|yarn"
+			"TEXTIEL": "cloth|yarn|textile"
 		},
 		"questiontype":
 		{
