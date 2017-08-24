@@ -1,5 +1,6 @@
 <html>
 <head>
+	<script type="text/javascript" src="/homey.js" data-origin="settings"></script>
 </head>
 
 <body>
@@ -30,7 +31,7 @@
         </div>
         <span id="resp"></span>
     </fieldset>
-    <button class="left" style="display:block" onclick="save()" data-i18n="settings.save" ></button>
+    <button id="apiSave" class="left" style="display:block" data-i18n="settings.save" ></button>
 	<br /><br />
 	<fieldset id="manual_input">
 		<legend data-i18n="settings.titlemanualinput"></legend>
@@ -281,15 +282,25 @@
 			</div>
         </div>
     </fieldset>
-	<button id="manualInput" class="left" style="display:block" onclick="saveManualInput()" data-i18n="settings.saveManualInput" ></button>
+	<button id="manualInput" class="left" style="display:block" data-i18n="settings.saveManualInput" ></button>
 	<br /><br />
 
 	<script type="text/javascript">
 
-        function onHomeyReady()
+        function onHomeyReady( Homey )
 		{
 			// Register on change events of fields in settings page.
 			document.getElementById("manual_input_set").addEventListener("change", OnManualInputCheckboxChanged);
+			document.getElementById("apiSave").addEventListener("click", function(elem)
+			{
+				save( Homey );
+				return false; // cancels save event! (we don't need the real button event to be handled).
+			});
+			document.getElementById("manualInput").addEventListener("click", function(elem)
+			{
+				saveManualInput( Homey );
+				return false; // cancels save event! (we don't need the real button event to be handled).
+			});
 			document.getElementById("gft_option").addEventListener("change", function(elem) { ToggleManualInputFields("gft"); });
 			document.getElementById("paper_option").addEventListener("change",function(elem) { ToggleManualInputFields("paper"); });
 			document.getElementById("rest_option").addEventListener("change", function(elem) { ToggleManualInputFields("rest"); });
@@ -307,7 +318,8 @@
 			ToggleManualInputFields("textile");
 
 			// Retrieve values from Homey settings
-        	Homey.get('postcode', function(err, postcode){
+        	Homey.get('postcode', function(err, postcode)
+        	{
         		if(err)
         		{
         			console.log("not working");
@@ -316,30 +328,32 @@
         		document.getElementById('postcode').value = postcode;
         	});
 
-		Homey.get('hnumber', function (err, houseNumber) {
-			console.log('NUMBER', err, houseNumber);
-			if (err) {
-				console.log("not working");
-				return console.error(err);
-			}
-			document.getElementById('number').value = houseNumber;
-		});
+			Homey.get('hnumber', function (err, houseNumber)
+			{
+				console.log('NUMBER', err, houseNumber);
+				if (err) {
+					console.log("not working");
+					return console.error(err);
+				}
+				document.getElementById('number').value = houseNumber;
+			});
 
-
-        	Homey.get('country',function(err, country){
+        	Homey.get('country',function(err, country)
+        	{
         		console.log(country);
         		if(err){
         			return console.error(err);
         		}
 
-        		if(country == 'NL' || country == 'BE'){
+        		if(country == 'NL' || country == 'BE') {
         			document.getElementById(country).checked = true;
         		}else{
         			document.getElementById('NL').checked = true;
         		}
         	});
 
-        	Homey.get('manualInput',function(err, manualInput) {
+        	Homey.get('manualInput',function(err, manualInput)
+        	{
 				console.log(manualInput);
         		if(err) {
         			return console.error(err);
@@ -354,7 +368,8 @@
 				document.getElementById('manual_input_set').checked = true;
 				OnManualInputCheckboxChanged();
 
-        		Homey.get('manualEntryData',function(err, manualEntryData) {
+        		Homey.get('manualEntryData',function(err, manualEntryData)
+        		{
 					console.log(manualEntryData);
 					if(err) {
 						return console.error(err);
@@ -392,14 +407,15 @@
 				});
 			});
 
-		Homey.ready();
-	}
+			Homey.ready();
+		}
 
 		// Save zipcode and housenumber to Homey Settings
-        function save() {
+        function save( Homey )
+        {
 			var resp = document.getElementById("resp");
 				resp.style.color = 'black';
-				resp.innerHTML = __('settings.checking');
+				resp.innerHTML = Homey.__('settings.checking');
         	var pc = document.getElementById('postcode').value;
         	var num = document.getElementById('number').value;
 
@@ -427,14 +443,14 @@
         		if(result) {
 					resp.style.color = 'green';
 					//resp.data-i18n = 'settings.update'
-					resp.innerHTML = __('settings.update') + pc + ', ' + num + ' in ' + country;
+					resp.innerHTML = Homey.__('settings.update') + pc + ', ' + num + ' in ' + country;
 		            Homey.set('postcode',pc);
 		            Homey.set('hnumber',num);
 		            Homey.set('country',country);
 	        	}
 				else
 				{
-					resp.innerHTML = __('settings.fail');
+					resp.innerHTML = Homey.__('settings.fail');
 					resp.style.color = 'red';
 	        	}
 
@@ -446,7 +462,7 @@
         }
 
 		// Save manual input data to Homey Settings
-		function saveManualInput()
+		function saveManualInput( Homey )
 		{
 			Homey.set('manualInput', true);
 
@@ -546,5 +562,4 @@
 		}
 	</script>
 </body>
-
 </html>

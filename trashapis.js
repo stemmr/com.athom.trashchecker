@@ -30,8 +30,16 @@ function afvalapp(postcode, homenumber, country, callback) {
             respArray.pop();
             for (var i in respArray) {
                 if (isNaN(parseInt(respArray[i]))) {
-                    dates[respArray[i]] = [];
                     curr = respArray[i];
+                    switch (curr) {
+                        case "ZAK_BLAUW":
+                            curr = "REST";
+                            break;
+                        case "PBP":
+                            curr = "PLASTIC";
+                            break;
+                    }
+                    dates[curr] = [];
                 }
                 else {
                     dates[curr].push(respArray[i]);
@@ -39,7 +47,7 @@ function afvalapp(postcode, homenumber, country, callback) {
             }
 
             if (Object.keys(dates).length === 0 && dates.constructor === Object) {
-                Homey.log('Invalid input');
+                console.log('Invalid input');
                 return callback(null, {});
             } else {//validate the response
                 return callback(null, dates);
@@ -48,7 +56,7 @@ function afvalapp(postcode, homenumber, country, callback) {
     });
 
     req.on('error', function (err) {
-        Homey.log(err.message);
+        console.log(err.message);
     });
 }
 
@@ -547,8 +555,10 @@ function recycleManager(postcode, housenumber, country, callback){
           // console.log("Maand is: " + dateFormat(obj1.data[i].title));
           for (var j=0; j < obj1.data[i].occurrences.length; j++){
             var dateStr = dateFormat(obj1.data[i].occurrences[j].from.date, "dd-mm-yyyy");
+            console.log("Soort afval is: " + obj1.data[i].occurrences[j].title);
             switch (obj1.data[i].occurrences[j].title) {
               case 'Groente en fruit':
+	            case 'GFT':
                 if(!fDates.GFT) fDates.GFT = [];
                 fDates.GFT.push(dateStr);
                 break;
@@ -561,6 +571,7 @@ function recycleManager(postcode, housenumber, country, callback){
                 fDates.REST.push(dateStr);
               break;
               case 'PMD':
+	            case 'Plastic verpakkingen':
                 if(!fDates.PLASTIC) fDates.PLASTIC = [];
                 fDates.PLASTIC.push(dateStr);
               break;
@@ -619,14 +630,11 @@ function parseDate(dateString) {
     return fullString;
 }
 
-
-
 apiList.push(afvalapp);
 apiList.push(mijnAfvalWijzer);
 apiList.push(afvalwijzerArnhem);
 apiList.push(twenteMilieu);
 apiList.push(gemeenteHellendoorn);
 apiList.push(recycleManager);
-
 
 module.exports = apiList;

@@ -10,7 +10,7 @@ Unfortunately not all cities work with the Trashcan Reminder, if you can find yo
 - [afvalwijzerArnhem](https://www.afvalwijzer-arnhem.nl)
 - [Gemeente Hellendoorn](http://hellendoornafvalkalender.2go-mobile.com)
 - [Twentemilieu](https://www.twentemilieu.nl)
-- [recycleManager] (http://www.recyclemanager.nl)
+- [recycleManager](http://www.recyclemanager.nl)
 
 If your city is not supported you can always add your schedule manually.
 If you wish to contribute to the project (for example by adding support for a city) I would advise you to take a look at [this explanation](https://github.com/apstemmer/com.athom.trashchecker/blob/master/developers)
